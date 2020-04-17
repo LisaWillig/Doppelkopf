@@ -35,8 +35,9 @@ void UDoppelkopfGameInstance::Init() {
 	if (Subsystem != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("Subsystem: %s"), *Subsystem->GetSubsystemName().ToString())
 			SessionInterface = Subsystem->GetSessionInterface();
-
+		
 		if (SessionInterface.IsValid()) {
+			
 			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UDoppelkopfGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UDoppelkopfGameInstance::OnCreateSessionComplete);
 			SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UDoppelkopfGameInstance::OnFindSessionsComplete);
@@ -62,7 +63,7 @@ void UDoppelkopfGameInstance::OnCreateSessionComplete(FName SessionName, bool Su
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Maps/Table?listen");
+	World->ServerTravel("/Game/Level/TableLobby?listen");
 }
 
 void UDoppelkopfGameInstance::OnFindSessionsComplete(bool Success) {
@@ -182,7 +183,7 @@ void UDoppelkopfGameInstance::LoadMainMenu() {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
 
-	PlayerController->ClientTravel("/Game/Maps/MenuLevel", ETravelType::TRAVEL_Absolute);
+	PlayerController->ClientTravel("/Game/Level/MainMenu", ETravelType::TRAVEL_Absolute);
 
 }
 void UDoppelkopfGameInstance::LoadMenu() {

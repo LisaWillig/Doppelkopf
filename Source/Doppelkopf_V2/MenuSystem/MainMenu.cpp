@@ -47,7 +47,10 @@ bool UMainMenu::Initialize() {
 }
 
 void UMainMenu::Quit() {
-	if (MenuInterface == nullptr) return;
+	if (MenuInterface == nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("Problem"))
+			return;
+	}
 	MenuInterface->QuitGame();
 }
 
