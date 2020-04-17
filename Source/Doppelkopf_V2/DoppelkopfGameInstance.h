@@ -44,6 +44,9 @@ public:
 
 	void StartSession();
 
+	UPROPERTY(BlueprintReadOnly)
+	int ConnectedPlayers = 1;
+
 private:
 
 	FText ServerName;

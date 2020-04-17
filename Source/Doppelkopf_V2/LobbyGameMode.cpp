@@ -19,9 +19,11 @@ void ALobbyGameMode::StartSession() {
 	auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr) {
 		GameInstance->StartSession();
+		GameInstance->ConnectedPlayers = NbOfPlayers;
 	}
 	if (!ensure(World != nullptr))return;
 	bUseSeamlessTravel = true;
+
 	World->ServerTravel("/Game/Level/Table?listen");
 }
 void ALobbyGameMode::Logout(AController* Exiting)
