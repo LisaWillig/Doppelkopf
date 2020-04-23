@@ -25,6 +25,11 @@ void UMenuWidget::Setup() {
 }
 
 void UMenuWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) {
+	RemoveMenu();
+	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
+}
+
+void UMenuWidget::RemoveMenu() {
 	RemoveFromViewport();
 	auto* world = GetWorld();
 	if (!ensure(world != nullptr))
@@ -35,5 +40,4 @@ void UMenuWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) {
 	FInputModeGameOnly inputMode;
 	playerController->SetInputMode(inputMode);
 	playerController->bShowMouseCursor = false;
-	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
 }

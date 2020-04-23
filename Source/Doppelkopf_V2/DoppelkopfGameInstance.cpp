@@ -8,6 +8,7 @@
 #include "MenuSystem/MainMenu.h"
 #include "MenuSystem/InGameMenu.h"
 #include "MenuSystem/MenuWidget.h"
+#include "MenuSystem/LobbyMenu_Server.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 
@@ -26,6 +27,10 @@ UDoppelkopfGameInstance::UDoppelkopfGameInstance() {
 	ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBPClass(TEXT("/Game/MenuSystem/WBP_InGameMenu"));
 	if (!ensure(InGameMenuBPClass.Class != nullptr))return;
 	InGameMenuClass = InGameMenuBPClass.Class;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> LobbyMenuServerBPClass(TEXT("/Game/MenuSystem/WBP_LobbyServer"));
+	if (!ensure(LobbyMenuServerBPClass.Class != nullptr))return;
+	LobbyMenuServerClass = LobbyMenuServerBPClass.Class;
 }
 
 void UDoppelkopfGameInstance::Init() {
@@ -186,6 +191,15 @@ void UDoppelkopfGameInstance::LoadMainMenu() {
 	PlayerController->ClientTravel("/Game/Level/MainMenu", ETravelType::TRAVEL_Absolute);
 
 }
+void UDoppelkopfGameInstance::LoadLobbyMenu() {
+	if (!ensure(LobbyMenuServerClass != nullptr))return;
+	ULobbyMenu_Server* LobbyMenu = CreateWidget<ULobbyMenu_Server>(this, LobbyMenuServerClass);
+	if (!ensure(LobbyMenu != nullptr))return;
+	LobbyMenu->Setup();
+	LobbyMenu->SetMenuInterface(this);
+}
+
+// called from Blueprint
 void UDoppelkopfGameInstance::LoadMenu() {
 	if (!ensure(MenuClass != nullptr))return;
 	Menu = CreateWidget<UMainMenu>(this, MenuClass);

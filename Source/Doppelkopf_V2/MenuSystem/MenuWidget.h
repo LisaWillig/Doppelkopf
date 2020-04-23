@@ -18,6 +18,7 @@ class DOPPELKOPF_V2_API UMenuWidget : public UUserWidget
 public:
 
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
+	void RemoveMenu();
 	void SetMenuInterface(IMenuInterface* MenuInerface);
 	void Setup();
 

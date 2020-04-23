@@ -28,6 +28,9 @@ public:
 	void CreateSession();
 
 	UFUNCTION(BlueprintCallable)
+	void LoadLobbyMenu();
+
+	UFUNCTION(BlueprintCallable)
 		void LoadMenu();
 
 	UFUNCTION(BlueprintCallable)
@@ -53,6 +56,7 @@ private:
 
 	TSubclassOf<class UUserWidget> MenuClass;
 	TSubclassOf<class UUserWidget> InGameMenuClass;
+	TSubclassOf<class UUserWidget> LobbyMenuServerClass;
 
 	class TSharedPtr<FOnlineSessionSearch> SessionSearch;
 	IOnlineSessionPtr SessionInterface;
