@@ -14,4 +14,6 @@ class DOPPELKOPF_V2_API ADoppelkopfMode : public ADoppelkopf_V2GameMode
 {
 	GENERATED_BODY()
 	
+private:
+
 };

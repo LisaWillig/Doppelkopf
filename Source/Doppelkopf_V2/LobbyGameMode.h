@@ -25,4 +25,5 @@ private:
 	FTimerHandle TimerHandle;
 	uint32 NbOfPlayers = 0;
 
+	class ULobbyMenu_Server* menu;
 };

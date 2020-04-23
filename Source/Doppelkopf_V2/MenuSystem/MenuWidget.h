@@ -21,6 +21,8 @@ public:
 	void RemoveMenu();
 	void SetMenuInterface(IMenuInterface* MenuInerface);
 	void Setup();
+	void RemoveServerMenu();
+	APlayerController* GetMainController(const UObject* WorldContextObject);
 
 protected:
 

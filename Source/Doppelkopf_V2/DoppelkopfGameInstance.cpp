@@ -191,12 +191,13 @@ void UDoppelkopfGameInstance::LoadMainMenu() {
 	PlayerController->ClientTravel("/Game/Level/MainMenu", ETravelType::TRAVEL_Absolute);
 
 }
-void UDoppelkopfGameInstance::LoadLobbyMenu() {
-	if (!ensure(LobbyMenuServerClass != nullptr))return;
+ULobbyMenu_Server* UDoppelkopfGameInstance::LoadLobbyMenu() {
+	if (!ensure(LobbyMenuServerClass != nullptr))return nullptr;
 	ULobbyMenu_Server* LobbyMenu = CreateWidget<ULobbyMenu_Server>(this, LobbyMenuServerClass);
-	if (!ensure(LobbyMenu != nullptr))return;
+	if (!ensure(LobbyMenu != nullptr))return nullptr;
 	LobbyMenu->Setup();
 	LobbyMenu->SetMenuInterface(this);
+	return LobbyMenu;
 }
 
 // called from Blueprint

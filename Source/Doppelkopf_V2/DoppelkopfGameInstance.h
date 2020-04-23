@@ -28,7 +28,7 @@ public:
 	void CreateSession();
 
 	UFUNCTION(BlueprintCallable)
-	void LoadLobbyMenu();
+		ULobbyMenu_Server* LoadLobbyMenu();
 
 	UFUNCTION(BlueprintCallable)
 		void LoadMenu();

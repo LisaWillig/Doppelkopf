@@ -3,6 +3,7 @@
 
 #include "LobbyGameMode.h"
 #include "TimerManager.h"
+#include "MenuSystem/LobbyMenu_Server.h"
 #include "DoppelkopfGameInstance.h"
 
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
@@ -15,7 +16,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 			i++;
 		auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 		if (GameInstance != nullptr) {
-			GameInstance->LoadLobbyMenu();
+			menu = GameInstance->LoadLobbyMenu();
 		}
 	}
 	//if (NbOfPlayers > 0) {
@@ -26,8 +27,13 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 void ALobbyGameMode::StartSession() {
 
 	UWorld* World = GetWorld();
+	UE_LOG(LogTemp, Warning, TEXT("Starting Session ..."))
 	auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr) {
+		if (menu != nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("Remove Menu ..."))
+			menu->RemoveServerMenu();
+		}
 		GameInstance->StartSession();
 		GameInstance->ConnectedPlayers = NbOfPlayers;
 	}
