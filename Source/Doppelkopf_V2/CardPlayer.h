@@ -31,8 +31,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Card)
 		TSubclassOf<APlayingCard> PlayingCardClass;
 
-	UFUNCTION()
-		void OnRep_ServerState();
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,4 +49,6 @@ public:
 	UPROPERTY(replicated)
 	TArray<int32> CardValues;
 	bool GiveCards;
+	void GivePlayerCards();
+	void SetCardMesh();
 };

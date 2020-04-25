@@ -15,8 +15,10 @@ void ADoppelkopfMode::StartPlay() {
 void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 
 	FInputModeGameOnly inputMode;
+	
 	NewPlayerController->SetInputMode(inputMode);
 	NewPlayerController->bShowMouseCursor = true;
+	
 	Super::PostLogin(NewPlayerController);
 }
 

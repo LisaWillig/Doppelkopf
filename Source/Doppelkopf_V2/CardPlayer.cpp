@@ -9,6 +9,7 @@
 #include "DoppelkopfMode.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFrameWork/GameState.h"
+#include "Engine/EngineTypes.h"
 
 // Sets default values
 ACardPlayer::ACardPlayer()
@@ -31,7 +32,6 @@ ACardPlayer::ACardPlayer()
 
 void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
-	DOREPLIFETIME(ACardPlayer, PlayerCardArray);
 	DOREPLIFETIME(ACardPlayer, CardValues);
 }
 
@@ -40,58 +40,74 @@ void ACardPlayer::BeginPlay()
 {
 	GiveCards = true;
 	
-	if (GiveCards) {
-		UWorld* const World = GetWorld();
-		if (World != nullptr) {
-			ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
-			if (gamemode != nullptr) {
-				TArray<int32> MyHand = gamemode->GiveCards();
-				auto cardPositions = CardHand->GetAllSocketNames();
-				int i = 0;
-				for (FName socket : cardPositions) {
-					auto pos = CardHand->GetSocketTransform(socket);
-					if (PlayingCardClass != nullptr) {
-						auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-						
-						card->SetCardFromtInt(MyHand[i] + 52);
-						CardValues.Add(MyHand[i] + 52);
-						card->SetReplicates(true);
-						PlayerCardArray.Add(card);
-					}
-					i++;
-				}
+	UWorld* const World = GetWorld();
+	if (World != nullptr) {
+		auto cardPositions = CardHand->GetAllSocketNames();
+		for (FName socket : cardPositions) {
+			auto pos = CardHand->GetSocketTransform(socket);
+			if (PlayingCardClass != nullptr) {
+				auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
+				//FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+				//card->AttachToActor(this, AttachmentRules, socket);
+				PlayerCardArray.Add(card);
+				card->SetReplicates(true);
 			}
-			GiveCards = false;
 		}
 	}
 	
+	if (GiveCards) {
+		GivePlayerCards();
+		SetCardMesh();
+	}
+
+	
+	
+
 	Super::BeginPlay();
 
 }
 
-void ACardPlayer::OnRep_ServerState() {
-	PlayerCardArray;
-}
 
 // Called every frame
 void ACardPlayer::Tick(float DeltaTime)
 {
-	if (IsLocallyControlled()) {
-		int i = 0;
-		if (PlayerCardArray.Num() != 0) {
-			for (auto card : PlayerCardArray) {
-				card->SetCardFromtInt(CardValues[i]);
-				i++;
-			}
-		}
-	}
+
 	Super::Tick(DeltaTime);
 	
+}
 
+void ACardPlayer::GivePlayerCards() {
+	TArray<int32> MyHand;
+
+	UWorld* const World = GetWorld();
+	if (World != nullptr) {
+		ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
+		if (gamemode != nullptr) {
+			MyHand = gamemode->GiveCards();
+			for (int card : MyHand) {
+				CardValues.Add(card + 52); //52: integer to change later, defines style of cards
+			}
+			GiveCards = false;
+		}
+	}
 
 
 }
 
+void ACardPlayer::SetCardMesh() {
+	int i = 0;
+	if (PlayerCardArray.Num() != 0) {
+		for (auto card : PlayerCardArray) {
+			//FRotator New = card->GetActorRotation();
+			//New.Pitch += 180;
+			//card->SetActorRotation(New);
+			UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
+			
+			card->SetCardFromtInt(CardValues[i]);
+			i++;
+		}
+	}
+}
 // Called to bind functionality to input
 void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
