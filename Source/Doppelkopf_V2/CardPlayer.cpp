@@ -85,7 +85,7 @@ void ACardPlayer::GivePlayerCards() {
 		if (gamemode != nullptr) {
 			MyHand = gamemode->GiveCards();
 			for (int card : MyHand) {
-				CardValues.Add(card + 104); //52: integer to change later, defines style of cards
+				CardValues.Add(card); //52: integer to change later, defines style of cards
 			}
 			GiveCards = false;
 		}
