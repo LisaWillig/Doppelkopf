@@ -20,7 +20,6 @@ void ULobbyMenu_Server::Start() {
 	auto GameMode = Cast<ALobbyGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GameMode != nullptr) {
 		GameMode->StartSession();
-		
 	}
 }
 

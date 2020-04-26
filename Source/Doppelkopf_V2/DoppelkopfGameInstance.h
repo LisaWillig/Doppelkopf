@@ -24,11 +24,12 @@ public:
 	virtual void Join(uint32 Index) override;
 
 	class UMainMenu* Menu;
+	class ULobbyMenu_Server* LobbyMenu;
 
 	void CreateSession();
 
 	UFUNCTION(BlueprintCallable)
-		ULobbyMenu_Server* LoadLobbyMenu();
+	virtual ULobbyMenu_Server* LoadLobbyMenu() override;
 
 	UFUNCTION(BlueprintCallable)
 		void LoadMenu();
@@ -46,6 +47,7 @@ public:
 		virtual void UpdateServerList() override;
 
 	void StartSession();
+	void RemoveLobbyMenu();
 
 	UPROPERTY(BlueprintReadOnly)
 	int ConnectedPlayers = 1;

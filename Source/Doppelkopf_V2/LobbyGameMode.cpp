@@ -10,15 +10,13 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	NbOfPlayers++;
-	int i = 0;
 	if (HasAuthority()) {
-		UE_LOG(LogTemp, Warning, TEXT("Called game: %i"), i)
-			i++;
 		auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 		if (GameInstance != nullptr) {
-			menu = GameInstance->LoadLobbyMenu();
+			GameInstance->LoadLobbyMenu();
 		}
 	}
+	
 	//if (NbOfPlayers > 0) {
 	//	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALobbyGameMode::StartSession, 5.0f, false);
 	//}
@@ -27,13 +25,9 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 void ALobbyGameMode::StartSession() {
 
 	UWorld* World = GetWorld();
-	UE_LOG(LogTemp, Warning, TEXT("Starting Session ..."))
 	auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr) {
-		if (menu != nullptr) {
-			UE_LOG(LogTemp, Warning, TEXT("Remove Menu ..."))
-			menu->RemoveServerMenu();
-		}
+		GameInstance->RemoveLobbyMenu();
 		GameInstance->StartSession();
 		GameInstance->ConnectedPlayers = NbOfPlayers;
 	}

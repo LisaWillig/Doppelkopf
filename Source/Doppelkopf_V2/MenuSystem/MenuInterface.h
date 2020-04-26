@@ -26,6 +26,7 @@ public:
 	virtual void Host(FText UserServerName) = 0;
 	virtual void Join(const uint32 Index) = 0;
 	virtual void LoadMainMenu() = 0;
+	virtual class ULobbyMenu_Server* LoadLobbyMenu() = 0;
 	virtual void QuitGame() = 0;
 	virtual void UpdateServerList() = 0;
 };

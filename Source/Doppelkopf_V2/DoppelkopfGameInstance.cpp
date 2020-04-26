@@ -193,7 +193,7 @@ void UDoppelkopfGameInstance::LoadMainMenu() {
 }
 ULobbyMenu_Server* UDoppelkopfGameInstance::LoadLobbyMenu() {
 	if (!ensure(LobbyMenuServerClass != nullptr))return nullptr;
-	ULobbyMenu_Server* LobbyMenu = CreateWidget<ULobbyMenu_Server>(this, LobbyMenuServerClass);
+	LobbyMenu = CreateWidget<ULobbyMenu_Server>(this, LobbyMenuServerClass);
 	if (!ensure(LobbyMenu != nullptr))return nullptr;
 	LobbyMenu->Setup();
 	LobbyMenu->SetMenuInterface(this);
@@ -209,6 +209,10 @@ void UDoppelkopfGameInstance::LoadMenu() {
 	Menu->SetMenuInterface(this);
 }
 
+void UDoppelkopfGameInstance::RemoveLobbyMenu() {
+	if (!ensure(LobbyMenu != nullptr))return;
+	LobbyMenu->RemoveMenu();
+}
 void UDoppelkopfGameInstance::LoadInGameMenu() {
 	if (!ensure(InGameMenuClass != nullptr))return;
 	UInGameMenu* InGameMenu = CreateWidget<UInGameMenu>(this, InGameMenuClass);

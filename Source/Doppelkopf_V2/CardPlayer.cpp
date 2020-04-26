@@ -85,7 +85,7 @@ void ACardPlayer::GivePlayerCards() {
 		if (gamemode != nullptr) {
 			MyHand = gamemode->GiveCards();
 			for (int card : MyHand) {
-				CardValues.Add(card + 52); //52: integer to change later, defines style of cards
+				CardValues.Add(card + 104); //52: integer to change later, defines style of cards
 			}
 			GiveCards = false;
 		}
@@ -102,8 +102,9 @@ void ACardPlayer::SetCardMesh() {
 			//New.Pitch += 180;
 			//card->SetActorRotation(New);
 			UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
-			
-			card->SetCardFromtInt(CardValues[i]);
+
+				card->SetCardFromtInt(CardValues[i]);
+				//card->SetCardFromtInt(52+10);
 			i++;
 		}
 	}

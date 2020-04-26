@@ -15,10 +15,10 @@ void UMenuWidget::Setup() {
 	if (!ensure(World != nullptr)) return;
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
-
-	FInputModeUIOnly InputMode;
+	UE_LOG(LogTemp, Warning, TEXT("PLAYER CONTROLLER: %s"), *PlayerController->GetName())
+		FInputModeGameAndUI InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputMode.SetWidgetToFocus(this->TakeWidget());
+	//InputMode.SetWidgetToFocus(this->TakeWidget());
 
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->bShowMouseCursor = true;
@@ -39,22 +39,24 @@ void UMenuWidget::RemoveMenu() {
 	auto* playerController = world->GetFirstPlayerController();
 	if (!ensure(playerController != nullptr))
 		return;
-	FInputModeGameOnly inputMode;
+	FInputModeGameAndUI inputMode;
 	playerController->SetInputMode(inputMode);
 	playerController->bShowMouseCursor = false;
 }
 
 void UMenuWidget::RemoveServerMenu() {
 	UE_LOG(LogTemp, Warning, TEXT("Remove from Viewport ..."))
-	RemoveFromViewport();
-	RemoveFromParent();
+	
+	this->RemoveFromParent();
 	auto* world = GetWorld();
 	if (!ensure(world != nullptr))
 		return;
+	UE_LOG(LogTemp, Warning, TEXT("World is not NULL"))
 	auto playerController = GetMainController(world);
 	if (!ensure(playerController != nullptr))
 		return; 
-	FInputModeGameOnly inputMode;
+	UE_LOG(LogTemp, Warning, TEXT("Main Comtroller is not NULL"))
+	FInputModeGameAndUI inputMode;
 	playerController->SetInputMode(inputMode);
 	playerController->bShowMouseCursor = true;
 }

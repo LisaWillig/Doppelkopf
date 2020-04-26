@@ -3,6 +3,7 @@
 
 #include "DoppelkopfMode.h"
 #include <algorithm>
+#include "Blueprint/WidgetLayoutLibrary.h"
 
 
 void ADoppelkopfMode::StartPlay() {
@@ -14,8 +15,12 @@ void ADoppelkopfMode::StartPlay() {
 
 void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 
-	FInputModeGameOnly inputMode;
-	
+	UWorld* World = GetWorld();
+	if (World != nullptr) {
+		UWidgetLayoutLibrary::RemoveAllWidgets(World);
+	}
+
+	FInputModeGameAndUI inputMode;
 	NewPlayerController->SetInputMode(inputMode);
 	NewPlayerController->bShowMouseCursor = true;
 	
