@@ -47,8 +47,8 @@ void ACardPlayer::BeginPlay()
 			auto pos = CardHand->GetSocketTransform(socket);
 			if (PlayingCardClass != nullptr) {
 				auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-				//FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
-				//card->AttachToActor(this, AttachmentRules, socket);
+				FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+				card->AttachToActor(this, AttachmentRules, socket);
 				PlayerCardArray.Add(card);
 				card->SetReplicates(true);
 			}

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Doppelkopf_V2GameMode.h"
-
+#include "GameLogic.h"
 #include "DoppelkopfMode.generated.h"
  
 
@@ -16,6 +16,9 @@ class DOPPELKOPF_V2_API ADoppelkopfMode : public ADoppelkopf_V2GameMode
 	virtual void PostLogin(APlayerController* NewPlayerController) override;
 	virtual void StartPlay() override;
 
+	UFUNCTION(BlueprintCallAble)
+	void Trick(int PlayedCard);
+
 public:
 
 	void ShuffleCards();
@@ -23,6 +26,8 @@ public:
 	TArray<int32> GiveCards();
 
 private:
+
+	GameLogic GameCalculation;
 
 	int askedForCards = 0;
 	TArray<int32> CardDeck = { 
