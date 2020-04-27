@@ -9,7 +9,7 @@
 void ADoppelkopfMode::StartPlay() {
 	
 	ShuffleCards();
-
+	GameCalculation = GameLogic();
 	Super::StartPlay();
 }
 
@@ -46,4 +46,8 @@ TArray<int32> ADoppelkopfMode::GiveCards() {
 	}
 	askedForCards++;
 	return hand;		
+}
+
+void ADoppelkopfMode::Trick(int32 PlayedCard) {
+	GameCalculation.AddCardToTrick(PlayedCard);
 }
