@@ -109,8 +109,8 @@ void ACardPlayer::SetCardMesh() {
 			//New.Pitch += 180;
 			//card->SetActorRotation(New);
 			UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
-				card->SetCardValue(CardValues[i]);
-				//card->SetCardFromtInt(CardValues[i]);
+				//card->SetCardValue(CardValues[i]);
+				card->SetCardFromtInt(CardValues[i]);
 				//card->SetCardFromtInt(52+10);
 			i++;
 		}

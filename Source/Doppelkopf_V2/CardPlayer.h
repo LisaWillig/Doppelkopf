@@ -31,6 +31,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Card)
 		TSubclassOf<APlayingCard> PlayingCardClass;
 
+	UFUNCTION(BlueprintCallable, Category = "CardToPlay")
 	void PlayCard(int32 card);
 
 protected:

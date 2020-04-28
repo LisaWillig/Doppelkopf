@@ -24,12 +24,12 @@ public:
 	void SetCardValue(int32 meshValue);
 
 	APlayerController* myPlayer;
-
+	int32 cardValue;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	int32 cardValue;
+	
 	
 
 public:	
