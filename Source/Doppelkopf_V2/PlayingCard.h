@@ -16,11 +16,21 @@ public:
 	APlayingCard();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
-	void SetCardFromtInt(int32 cardValue);
+	void SetCardFromtInt(int32 value);
+
+	UFUNCTION(BlueprintCallable)
+	void playThisCard();
+
+	void SetCardValue(int32 meshValue);
+
+	APlayerController* myPlayer;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	int32 cardValue;
+	
 
 public:	
 	// Called every frame

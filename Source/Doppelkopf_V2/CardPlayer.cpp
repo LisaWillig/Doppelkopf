@@ -51,6 +51,8 @@ void ACardPlayer::BeginPlay()
 				card->AttachToActor(this, AttachmentRules, socket);
 				PlayerCardArray.Add(card);
 				card->SetReplicates(true);
+				//card->myPlayer = World->GetFirstPlayerController();
+
 			}
 		}
 	}
@@ -66,6 +68,7 @@ void ACardPlayer::BeginPlay()
 	Super::BeginPlay();
 
 }
+
 
 
 // Called every frame
@@ -94,6 +97,10 @@ void ACardPlayer::GivePlayerCards() {
 
 }
 
+void ACardPlayer::PlayCard(int32 card) {
+
+}
+
 void ACardPlayer::SetCardMesh() {
 	int i = 0;
 	if (PlayerCardArray.Num() != 0) {
@@ -102,8 +109,8 @@ void ACardPlayer::SetCardMesh() {
 			//New.Pitch += 180;
 			//card->SetActorRotation(New);
 			UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
-
-				card->SetCardFromtInt(CardValues[i]);
+				card->SetCardValue(CardValues[i]);
+				//card->SetCardFromtInt(CardValues[i]);
 				//card->SetCardFromtInt(52+10);
 			i++;
 		}
@@ -115,4 +122,6 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+
 

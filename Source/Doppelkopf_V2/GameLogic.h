@@ -19,7 +19,7 @@ private:
 
 	TMap<int32, FString> Sonderpunkte; 
 
-	void CalculateTrickResult(TArray<int32> CurrentTrick);
+	int32 CalculateTrickResult(TArray<int32> CurrentTrick);
 	void ResetTrick();
 	int32 TrickCardCount = 0;
 	TArray<int32> CurrentTrick;

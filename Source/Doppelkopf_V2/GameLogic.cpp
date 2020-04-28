@@ -20,64 +20,67 @@ void GameLogic::AddCardToTrick(int32 MeshValue) {
 	TrickCardCount++;
 	if (TrickCardCount == 4) {
 
-		CalculateTrickResult(CurrentTrick);
+		int32 trickwinner = CalculateTrickResult(CurrentTrick);
+		UE_LOG(LogTemp, Warning, TEXT("Winner of the Trick: %i"), trickwinner)
 		ResetTrick();
 	}
 	
 }
 
 
-void GameLogic::CalculateTrickResult(TArray<int32> Trick) {
+int32 GameLogic::CalculateTrickResult(TArray<int32> Trick) {
 	CheckTrickSpecial(Trick);
 
+	int32 highestCard = Trick[0];
+	int32 indexTrickWinner = 0;
 	// Farbstich ohne Trumpf
 	if (!Trick.ContainsByPredicate([](int32 item) {return item > 30;})) {
-		int32 highestCard = Trick[0];
-		UE_LOG(LogTemp, Warning, TEXT("Farbstich!"))
 		// Herzstich
 		if (Trick[0] < 10){
 			for (int i = 1; i < 4; i++) {
 				if (Trick[i] > highestCard && Trick[i] < 10) {
 					highestCard = Trick[i];
+					indexTrickWinner = i;
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Herzstich: %i"), highestCard)
-			}
+			return indexTrickWinner;
+		}
 		
 		//PikStick	
-		else if (Trick[0] < 20) {
+		if (Trick[0] < 20) {
 			for (int i = 1; i < 4; i++) {
 				if (Trick[i] > highestCard && Trick[i] < 20 && Trick[i] > 10) {
 					highestCard = Trick[i];
+					indexTrickWinner = i;
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Pikstich: %i"), highestCard)
+			return indexTrickWinner;
 		}
 		//Kreuzstick
-		else if (Trick[0] < 30) {
+		if (Trick[0] < 30) {
 			for (int i = 1; i < 4; i++) {
 				if (Trick[i] > highestCard && Trick[i] < 30 && Trick[i] > 20) {
 					highestCard = Trick[i];
+					indexTrickWinner = i;
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Kreuzstich: %i"), highestCard)
+			return indexTrickWinner;
 		}
 	}
 
 	//Trumpfstick
 	else {
-		int32 highestCard = Trick[0];
 		for (int i = 1; i < 4; i++) {
 			if (Trick[i] > highestCard) {
 				highestCard = Trick[i];
+				indexTrickWinner = i;
 
 			}
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Trumpfstich: %i"), highestCard)
+		return indexTrickWinner;
 	}
 	
-	
-	UE_LOG(LogTemp, Warning, TEXT("%i, %i, %i, %i"), Trick[0], Trick[1], Trick[2], Trick[3])
+	return indexTrickWinner;
 }
 
 void GameLogic::CheckTrickSpecial(TArray<int32> Trick) {

@@ -22,6 +22,17 @@ void APlayingCard::BeginPlay()
 	
 }
 
+void APlayingCard::SetCardValue(int32 meshValue) {
+	SetCardFromtInt(meshValue);
+	cardValue = meshValue;
+}
+
+void APlayingCard::playThisCard() {
+	
+	//UE_LOG(LogTemp, Warning, TEXT("Card Played: %i by Player %s"), cardValue, *myPlayer->GetName())
+	
+}
+
 // Called every frame
 void APlayingCard::Tick(float DeltaTime)
 {

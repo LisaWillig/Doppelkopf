@@ -31,6 +31,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Card)
 		TSubclassOf<APlayingCard> PlayingCardClass;
 
+	void PlayCard(int32 card);
 
 protected:
 	// Called when the game starts or when spawned
