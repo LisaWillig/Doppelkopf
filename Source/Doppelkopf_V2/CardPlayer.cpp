@@ -62,11 +62,7 @@ void ACardPlayer::BeginPlay()
 		SetCardMesh();
 	}
 
-	
-	
-
 	Super::BeginPlay();
-
 }
 
 
@@ -74,9 +70,7 @@ void ACardPlayer::BeginPlay()
 // Called every frame
 void ACardPlayer::Tick(float DeltaTime)
 {
-
 	Super::Tick(DeltaTime);
-	
 }
 
 void ACardPlayer::GivePlayerCards() {
@@ -93,12 +87,10 @@ void ACardPlayer::GivePlayerCards() {
 			GiveCards = false;
 		}
 	}
-
-
 }
 
 void ACardPlayer::PlayCard(int32 card) {
-
+	UE_LOG(LogTemp, Warning, TEXT("Play card: %i"), card)
 }
 
 void ACardPlayer::SetCardMesh() {
@@ -109,9 +101,8 @@ void ACardPlayer::SetCardMesh() {
 			//New.Pitch += 180;
 			//card->SetActorRotation(New);
 			UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
-				//card->SetCardValue(CardValues[i]);
-				card->SetCardFromtInt(CardValues[i]);
-				//card->SetCardFromtInt(52+10);
+			card->SetCardFromtInt(CardValues[i]);
+			card->cardValue = CardValues[i];
 			i++;
 		}
 	}

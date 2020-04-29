@@ -29,7 +29,7 @@ void APlayingCard::SetCardValue(int32 meshValue) {
 
 void APlayingCard::playThisCard() {
 	
-	//UE_LOG(LogTemp, Warning, TEXT("Card Played: %i by Player %s"), cardValue, *myPlayer->GetName())
+	UE_LOG(LogTemp, Warning, TEXT("Card Played: %i"), cardValue)
 	
 }
 
