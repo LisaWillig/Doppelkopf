@@ -50,7 +50,7 @@ public:
 	void RemoveLobbyMenu();
 
 	UPROPERTY(BlueprintReadOnly)
-	int ConnectedPlayers = 1;
+	int ConnectedPlayers = 3;
 
 private:
 

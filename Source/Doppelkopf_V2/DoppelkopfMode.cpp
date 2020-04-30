@@ -3,15 +3,28 @@
 
 #include "DoppelkopfMode.h"
 #include <algorithm>
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerStart.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "UObject/ConstructorHelpers.h"
+#include "DoppelkopfGameInstance.h"
 
-
+ADoppelkopfMode::ADoppelkopfMode() {
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/BaseClasses/BP_Player"));
+	if (PlayerPawnBPClass.Class != NULL)
+	{
+		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
 void ADoppelkopfMode::StartPlay() {
 	
 	ShuffleCards();
 	GameCalculation = GameLogic();
+
 	Super::StartPlay();
+	
 }
+
 
 void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 
@@ -25,6 +38,14 @@ void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 	NewPlayerController->bShowMouseCursor = true;
 	
 	Super::PostLogin(NewPlayerController);
+}
+
+AActor* ADoppelkopfMode::ChoosePlayerStart_Implementation(AController* Player) {
+	/*TArray<AActor*> PlayerStarts;
+	TSubclassOf< APlayerStart > PlayerStart;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlayerStart, PlayerStarts);
+	UE_LOG(LogTemp, Warning, TEXT("Playerstarts: %i"), PlayerStarts.Num())*/
+	return nullptr;
 }
 
 void ADoppelkopfMode::ShuffleCards() {
@@ -47,6 +68,7 @@ TArray<int32> ADoppelkopfMode::GiveCards() {
 	askedForCards++;
 	return hand;		
 }
+
 
 void ADoppelkopfMode::Trick(int32 PlayedCard) {
 	GameCalculation.AddCardToTrick(PlayedCard);

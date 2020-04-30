@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Doppelkopf_V2GameMode.h"
 #include "GameLogic.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/GameMode.h"
 #include "DoppelkopfMode.generated.h"
  
 
 UCLASS()
-class DOPPELKOPF_V2_API ADoppelkopfMode : public ADoppelkopf_V2GameMode
+class DOPPELKOPF_V2_API ADoppelkopfMode : public AGameMode
 {
 	GENERATED_BODY()
 
@@ -21,10 +22,15 @@ class DOPPELKOPF_V2_API ADoppelkopfMode : public ADoppelkopf_V2GameMode
 
 public:
 
+	ADoppelkopfMode();
 	void ShuffleCards();
 	TArray<int32> NewDeck;
 	TArray<int32> GiveCards();
 
+
+	
+	UFUNCTION()
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 private:
 
 	GameLogic GameCalculation;

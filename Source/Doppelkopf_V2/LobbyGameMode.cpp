@@ -25,11 +25,12 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 void ALobbyGameMode::StartSession() {
 
 	UWorld* World = GetWorld();
+	int32 HumanPlayers = GetNumPlayers();
 	auto GameInstance = Cast<UDoppelkopfGameInstance>(GetGameInstance());
 	if (GameInstance != nullptr) {
 		GameInstance->RemoveLobbyMenu();
 		GameInstance->StartSession();
-		GameInstance->ConnectedPlayers = NbOfPlayers;
+		GameInstance->ConnectedPlayers = HumanPlayers;
 	}
 	if (!ensure(World != nullptr))return;
 	bUseSeamlessTravel = true;

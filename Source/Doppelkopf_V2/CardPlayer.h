@@ -31,8 +31,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Card)
 		TSubclassOf<APlayingCard> PlayingCardClass;
 
-	UFUNCTION(BlueprintCallable, Category = "CardToPlay")
-	void PlayCard(int32 card);
+	//UFUNCTION(BlueprintCallable, Category = Card)
+	//void PlayCard(int32 card);
 
 protected:
 	// Called when the game starts or when spawned

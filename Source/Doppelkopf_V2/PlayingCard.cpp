@@ -27,12 +27,13 @@ void APlayingCard::SetCardValue(int32 meshValue) {
 	cardValue = meshValue;
 }
 
+/*
 void APlayingCard::playThisCard() {
 	
-	UE_LOG(LogTemp, Warning, TEXT("Card Played: %i"), cardValue)
+	//UE_LOG(LogTemp, Warning, TEXT("Card Played: %i"), cardValue)
 	
 }
-
+*/
 // Called every frame
 void APlayingCard::Tick(float DeltaTime)
 {

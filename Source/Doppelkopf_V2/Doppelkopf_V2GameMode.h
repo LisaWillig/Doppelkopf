@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameMode.h"
 #include "Doppelkopf_V2GameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -13,6 +14,7 @@ class ADoppelkopf_V2GameMode : public AGameModeBase
 
 public:
 	ADoppelkopf_V2GameMode();
+
 };
 
 

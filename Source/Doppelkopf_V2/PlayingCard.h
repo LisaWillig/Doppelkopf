@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/LocalPlayer.h"
 #include "PlayingCard.generated.h"
 
 UCLASS()
@@ -18,18 +19,17 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
 	void SetCardFromtInt(int32 value);
 
-	UFUNCTION(BlueprintCallable)
-	void playThisCard();
+	//UFUNCTION(BlueprintCallable, Category = "Card")
+	//void playThisCard();
 
+	UFUNCTION()
 	void SetCardValue(int32 meshValue);
 
-	APlayerController* myPlayer;
-	int32 cardValue;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	
+	int32 cardValue;
 	
 
 public:	
