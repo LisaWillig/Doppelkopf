@@ -27,7 +27,7 @@ public:
 	TArray<int32> NewDeck;
 	TArray<int32> GiveCards();
 
-
+	void Tick(float DeltaTime);
 	
 	UFUNCTION()
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;

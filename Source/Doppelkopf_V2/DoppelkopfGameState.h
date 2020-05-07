@@ -14,4 +14,13 @@ class DOPPELKOPF_V2_API ADoppelkopfGameState : public AGameState
 {
 	GENERATED_BODY()
 	
+public:
+
+	ADoppelkopfGameState();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
+	bool bPlay = false;
+	int ActivePlayerIndex;
 };

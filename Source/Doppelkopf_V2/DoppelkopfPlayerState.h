@@ -14,4 +14,11 @@ class DOPPELKOPF_V2_API ADoppelkopfPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(BlueprintReadOnly, Replicated)
+	bool myTurn = false;
+	ADoppelkopfPlayerState();
+
 };
