@@ -19,9 +19,14 @@ APlayingCard::APlayingCard()
 void APlayingCard::BeginPlay()
 {
 	Super::BeginPlay();
+
+	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);
 	
 }
 
+void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
+	UE_LOG(LogTemp, Warning, TEXT("I was clicked"))
+}
 void APlayingCard::SetCardValue(int32 meshValue) {
 	SetCardFromtInt(meshValue);
 	cardValue = meshValue;

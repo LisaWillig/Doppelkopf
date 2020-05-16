@@ -26,7 +26,5 @@ void ADoppelkopfGameState::Tick(float DeltaTime) {
 		ActivePlayerIndex = 0;
 		Cast<ADoppelkopfPlayerState>(PlayerArray[0])->myTurn = true;
 	}
-	
-	
-    
+	    
 }

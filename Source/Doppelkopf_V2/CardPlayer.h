@@ -29,7 +29,7 @@ public:
 	class USceneComponent* Root;
 
 	UPROPERTY(EditDefaultsOnly, Category = Card)
-		TSubclassOf<APlayingCard> PlayingCardClass;
+	TSubclassOf<APlayingCard> PlayingCardClass;
 
 	//UFUNCTION(BlueprintCallable, Category = Card)
 	//void PlayCard(int32 card);

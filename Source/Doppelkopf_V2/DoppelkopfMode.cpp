@@ -8,6 +8,7 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "UObject/ConstructorHelpers.h"
 #include "DoppelkopfGameInstance.h"
+#include "Engine/World.h"
 #include "DoppelkopfGameState.h"
 
 ADoppelkopfMode::ADoppelkopfMode() {
@@ -42,15 +43,20 @@ void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 }
 
 AActor* ADoppelkopfMode::ChoosePlayerStart_Implementation(AController* Player) {
-	UE_LOG(LogTemp, Warning, TEXT("TEST"))
-	/*TArray<AActor*> PlayerStarts;
-	TSubclassOf< APlayerStart > PlayerStart;
-	PlayerStart = APlayerStart::StaticClass();
+	
+	// create array with all PlayerStart Actors
+	TArray<AActor*> PlayerStarts;
+	TSubclassOf< APlayerStart > PlayerStart = APlayerStart::StaticClass();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), PlayerStart, PlayerStarts);
-	UE_LOG(LogTemp, Warning, TEXT("Playerstarts: %i"), PlayerStarts.Num())
-		//return nullptr;*/
-
-		return Super::ChoosePlayerStart_Implementation(Player);
+	
+	//Loop through Array, spawn only if the spawn is not already taken
+	for (auto Spawn : PlayerStarts) {
+		if (Cast< APlayerStart>(Spawn)->PlayerStartTag != "Taken") {
+			Cast< APlayerStart>(Spawn)->PlayerStartTag = "Taken";
+			return Spawn;
+		}
+	}
+	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
 void ADoppelkopfMode::Tick(float DeltaTime) {

@@ -40,25 +40,28 @@ void ACardPlayer::BeginPlay()
 {
 	GiveCards = true;
 	
-	UWorld* const World = GetWorld();
-	if (World != nullptr) {
-		auto cardPositions = CardHand->GetAllSocketNames();
-		for (FName socket : cardPositions) {
-			auto pos = CardHand->GetSocketTransform(socket);
-			if (PlayingCardClass != nullptr) {
-				auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-				FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
-				card->AttachToActor(this, AttachmentRules, socket);
-				PlayerCardArray.Add(card);
-				card->SetReplicates(true);
+	if (HasAuthority()) {
+		UWorld* const World = GetWorld();
+		if (World != nullptr) {
+			auto cardPositions = CardHand->GetAllSocketNames();
+			for (FName socket : cardPositions) {
+				auto pos = CardHand->GetSocketTransform(socket);
+				UE_LOG(LogTemp, Warning, TEXT("Socket: %s"), *socket.ToString())
+					if (PlayingCardClass != nullptr) {
+						auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
+						FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+						card->AttachToActor(this, AttachmentRules, socket);
+						PlayerCardArray.Add(card);
+						card->SetReplicates(true);
+					}
 			}
 		}
 	}
 	
-	if (GiveCards) {
+	/*if (GiveCards) {
 		GivePlayerCards();
 		SetCardMesh();
-	}
+	}*/
 
 	Super::BeginPlay();
 }
@@ -92,9 +95,9 @@ void ACardPlayer::SetCardMesh() {
 	int i = 0;
 	if (PlayerCardArray.Num() != 0) {
 		for (auto card : PlayerCardArray) {
-			//FRotator New = card->GetActorRotation();
-			//New.Pitch += 180;
-			//card->SetActorRotation(New);
+			FRotator New = card->GetActorRotation();
+			New.Pitch += 180;
+			card->SetActorRotation(New);
 			//UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
 			//card->SetCardFromtInt(CardValues[i]);
 			card->SetCardValue(CardValues[i]);

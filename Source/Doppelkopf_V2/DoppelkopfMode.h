@@ -29,7 +29,7 @@ public:
 
 	void Tick(float DeltaTime);
 	
-	UFUNCTION()
+	//UFUNCTION()
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 private:
 
