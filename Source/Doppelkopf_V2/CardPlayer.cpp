@@ -32,38 +32,58 @@ ACardPlayer::ACardPlayer()
 
 void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACardPlayer, PlayerCardArray);
 	DOREPLIFETIME(ACardPlayer, CardValues);
 }
 
 // Called when the game starts or when spawned
 void ACardPlayer::BeginPlay()
 {
-	GiveCards = true;
-	
+	Super::BeginPlay();
+
+	TArray<int32> MyHand;
+
 	if (HasAuthority()) {
 		UWorld* const World = GetWorld();
+		MyHand.Empty();
+		PlayerCardArray.Empty();
+		CardValues.Empty();
+
+		ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
+		if (gamemode != nullptr) {
+			MyHand = gamemode->GiveCards();
+		}
+		int i = 0;
+
 		if (World != nullptr) {
 			auto cardPositions = CardHand->GetAllSocketNames();
 			for (FName socket : cardPositions) {
 				auto pos = CardHand->GetSocketTransform(socket);
-				UE_LOG(LogTemp, Warning, TEXT("Socket: %s"), *socket.ToString())
-					if (PlayingCardClass != nullptr) {
-						auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-						FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
-						card->AttachToActor(this, AttachmentRules, socket);
-						PlayerCardArray.Add(card);
-						card->SetReplicates(true);
-					}
+				if (PlayingCardClass != nullptr) {
+					auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
+					FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+					card->AttachToActor(this, AttachmentRules, socket);
+					PlayerCardArray.Add(card);
+					CardValues.Add(MyHand[i]);
+					card->cardValue = MyHand[i];
+					card->OnRep_SetCardValue();
+					card->SetReplicates(true);
+				}
+				i++;
 			}
 		}
 	}
-	
-	/*if (GiveCards) {
-		GivePlayerCards();
-		SetCardMesh();
-	}*/
+	if (HasAuthority()) {
+		TArray<AActor*> playersHand;
+		GetAttachedActors(playersHand, true);
+		for (auto card : playersHand) {
+			FRotator rot = card->GetActorRotation();
+			rot.Roll += 180;
+			card->SetActorRotation(rot);
+		}
+	}
 
-	Super::BeginPlay();
 }
 
 
@@ -72,31 +92,19 @@ void ACardPlayer::BeginPlay()
 void ACardPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+
 }
 
-void ACardPlayer::GivePlayerCards() {
-	TArray<int32> MyHand;
-
-	UWorld* const World = GetWorld();
-	if (World != nullptr) {
-		ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
-		if (gamemode != nullptr) {
-			MyHand = gamemode->GiveCards();
-			for (int card : MyHand) {
-				CardValues.Add(card); //52: integer to change later, defines style of cards
-			}
-			GiveCards = false;
-		}
-	}
-}
 
 
 void ACardPlayer::SetCardMesh() {
-	int i = 0;
+	/*int i = 0;
 	if (PlayerCardArray.Num() != 0) {
 		for (auto card : PlayerCardArray) {
 			FRotator New = card->GetActorRotation();
-			New.Pitch += 180;
+			//New.Pitch += 180;
 			card->SetActorRotation(New);
 			//UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
 			//card->SetCardFromtInt(CardValues[i]);
@@ -104,7 +112,7 @@ void ACardPlayer::SetCardMesh() {
 
 			i++;
 		}
-	}
+	}*/
 }
 // Called to bind functionality to input
 void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

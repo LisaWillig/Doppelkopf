@@ -23,13 +23,20 @@ public:
 	//void playThisCard();
 
 	UFUNCTION()
-	void SetCardValue(int32 meshValue);
+	void OnRep_SetCardValue();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, replicated)
+	class UStaticMeshComponent* CardMesh; 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SetCardValue)
+	int32 cardValue;
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	int32 cardValue;
+	
 	
 
 public:	

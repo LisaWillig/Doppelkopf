@@ -38,6 +38,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool bCardsDealed = false;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,9 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, replicated, BlueprintReadWrite,Category = Card)
 	TArray<APlayingCard*> PlayerCardArray;
 
-	UPROPERTY(replicated)
+	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<int32> CardValues;
-	bool GiveCards;
-	void GivePlayerCards();
+
 	void SetCardMesh();
 };

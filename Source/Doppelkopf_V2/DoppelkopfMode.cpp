@@ -77,8 +77,12 @@ void ADoppelkopfMode::ShuffleCards() {
 
 TArray<int32> ADoppelkopfMode::GiveCards() {
 
-	TArray<int32> hand; 
-	if (askedForCards >= 4) { return hand; }
+	TArray<int32> hand;
+	if (askedForCards >= 4) {
+		hand.Init(0, 12);
+		return hand;
+	}
+
 	for (int i = askedForCards * 12; i < askedForCards * 12 + 12; i++) {
 		hand.Add(NewDeck[i]);
 	}

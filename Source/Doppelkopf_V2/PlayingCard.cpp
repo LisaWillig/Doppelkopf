@@ -2,6 +2,9 @@
 
 
 #include "PlayingCard.h"
+#include "Net/UnrealNetwork.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine.h"
 
 // Sets default values
 APlayingCard::APlayingCard()
@@ -12,7 +15,10 @@ APlayingCard::APlayingCard()
 	bReplicates = true;
 	bAlwaysRelevant = true;
 	SetReplicates(true);
-
+	
+	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayingCardMesh"));
+	CardMesh->SetIsReplicated(true);
+	RootComponent = CardMesh;
 }
 
 // Called when the game starts or when spawned
@@ -21,15 +27,27 @@ void APlayingCard::BeginPlay()
 	Super::BeginPlay();
 
 	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);
+
+	
 	
 }
 
-void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
-	UE_LOG(LogTemp, Warning, TEXT("I was clicked"))
+void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(APlayingCard, cardValue);
+	DOREPLIFETIME(APlayingCard, CardMesh);
 }
-void APlayingCard::SetCardValue(int32 meshValue) {
-	SetCardFromtInt(meshValue);
-	cardValue = meshValue;
+
+
+void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
+	UE_LOG(LogTemp, Warning, TEXT("I was clicked: %i"), cardValue)
+		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("Mesh Value %i"), cardValue));
+
+}
+void APlayingCard::OnRep_SetCardValue() {
+	SetCardFromtInt(cardValue);
 }
 
 /*
