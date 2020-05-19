@@ -13,8 +13,6 @@ APlayingCard::APlayingCard()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	bReplicates = true;
-	bAlwaysRelevant = true;
-	SetReplicates(true);
 	
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayingCardMesh"));
 	CardMesh->SetIsReplicated(true);
@@ -42,21 +40,14 @@ void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLi
 
 
 void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
-	UE_LOG(LogTemp, Warning, TEXT("I was clicked: %i"), cardValue)
-		GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("Mesh Value %i"), cardValue));
-
+	//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i"), cardValue));
 }
+
 void APlayingCard::OnRep_SetCardValue() {
 	SetCardFromtInt(cardValue);
 }
 
-/*
-void APlayingCard::playThisCard() {
-	
-	//UE_LOG(LogTemp, Warning, TEXT("Card Played: %i"), cardValue)
-	
-}
-*/
+
 // Called every frame
 void APlayingCard::Tick(float DeltaTime)
 {

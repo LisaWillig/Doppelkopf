@@ -20,6 +20,7 @@ ADoppelkopfMode::ADoppelkopfMode() {
 }
 void ADoppelkopfMode::StartPlay() {
 	
+	UE_LOG(LogTemp, Warning, TEXT("Begin"))
 	ShuffleCards();
 	GameCalculation = GameLogic();
 
@@ -92,5 +93,6 @@ TArray<int32> ADoppelkopfMode::GiveCards() {
 
 
 void ADoppelkopfMode::Trick(int32 PlayedCard) {
+	UE_LOG(LogTemp, Warning, TEXT("Test"))
 	GameCalculation.AddCardToTrick(PlayedCard);
 }

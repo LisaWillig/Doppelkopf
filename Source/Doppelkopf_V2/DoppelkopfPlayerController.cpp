@@ -2,11 +2,17 @@
 
 
 #include "DoppelkopfPlayerController.h"
+#include "GameFramework/Pawn.h"
 #include "DoppelkopfPlayerState.h"
+#include "CardPlayer.h"
 
 ADoppelkopfPlayerController::ADoppelkopfPlayerController() {
 	PrimaryActorTick.bStartWithTickEnabled = true;
 	PrimaryActorTick.bCanEverTick = true;
+	bEnableClickEvents = true;
+
+	//FInputModeGameAndUI mode;
+	//SetInputMode(mode);
 }
 
 void ADoppelkopfPlayerController::Tick(float DeltaTime) {
@@ -24,6 +30,29 @@ void ADoppelkopfPlayerController::Tick(float DeltaTime) {
 		else {
 			FInputModeGameAndUI mode;
 			SetInputMode(mode);
+		}
+	}
+}
+
+void ADoppelkopfPlayerController::SetupInputComponent() {
+
+	Super::SetupInputComponent();
+	InputComponent->BindAction("CardClicked", EInputEvent::IE_Released, this, &ADoppelkopfPlayerController::clickCard);
+}
+
+void ADoppelkopfPlayerController::clickCard() {
+	APawn* myPlayer = GetPawn();
+	if (myPlayer != nullptr) {
+		TArray<AActor*> playersHand;
+		myPlayer->GetAttachedActors(playersHand, true);
+		FHitResult MouseResult;
+		GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, false, MouseResult);
+		if (MouseResult.bBlockingHit) {
+			bool bFound = playersHand.Contains(MouseResult.GetActor());
+			if (bFound) {
+				UE_LOG(LogTemp, Warning, TEXT("I own it!"))
+				Cast<ACardPlayer>(myPlayer)->PlayCard(MouseResult.GetActor());
+			}
 		}
 	}
 }

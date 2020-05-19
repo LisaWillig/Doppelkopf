@@ -19,4 +19,6 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     class ADoppelkopfPlayerState* myPlayerState = nullptr;
+    virtual void SetupInputComponent() override;
+    void clickCard();
 };

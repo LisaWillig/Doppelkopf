@@ -10,24 +10,27 @@
 #include "Net/UnrealNetwork.h"
 #include "GameFrameWork/GameState.h"
 #include "Engine/EngineTypes.h"
+#include "Engine.h"
 
-// Sets default values
+
 ACardPlayer::ACardPlayer()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates =true;
+
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("MyRoot"));
 	Root->SetIsReplicated(true);
 	this->SetRootComponent(Root);
+
 	CardHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CardHand"));
 	CardHand->SetupAttachment(Root);
 	CardHand->SetVisibility(false);
 	CardHand->SetIsReplicated(true);
-	// Create a camera boom (pulls in towards the player if there is a collision)
+
+	// Create a camera boom 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	Camera->SetupAttachment(CardHand);
-	Camera->bUsePawnControlRotation = false; // Rotate the arm based on the controller
+	Camera->bUsePawnControlRotation = false; 
 }
 
 void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -37,82 +40,82 @@ void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLif
 	DOREPLIFETIME(ACardPlayer, CardValues);
 }
 
-// Called when the game starts or when spawned
+
 void ACardPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
 	TArray<int32> MyHand;
+	UWorld* const World = GetWorld();
 
 	if (HasAuthority()) {
-		UWorld* const World = GetWorld();
-		MyHand.Empty();
+
+		//clear Arrays for each Player
 		PlayerCardArray.Empty();
 		CardValues.Empty();
 
-		ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
-		if (gamemode != nullptr) {
-			MyHand = gamemode->GiveCards();
-		}
-		int i = 0;
-
 		if (World != nullptr) {
-			auto cardPositions = CardHand->GetAllSocketNames();
-			for (FName socket : cardPositions) {
-				auto pos = CardHand->GetSocketTransform(socket);
-				if (PlayingCardClass != nullptr) {
-					auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-					FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
-					card->AttachToActor(this, AttachmentRules, socket);
-					PlayerCardArray.Add(card);
-					CardValues.Add(MyHand[i]);
-					card->cardValue = MyHand[i];
-					card->OnRep_SetCardValue();
-					card->SetReplicates(true);
-				}
-				i++;
-			}
-		}
-	}
-	if (HasAuthority()) {
-		TArray<AActor*> playersHand;
-		GetAttachedActors(playersHand, true);
-		for (auto card : playersHand) {
-			FRotator rot = card->GetActorRotation();
-			rot.Roll += 180;
-			card->SetActorRotation(rot);
+			GetPlayerHand(World, MyHand);
+			SpawnCardHand(World, MyHand);
 		}
 	}
 
 }
 
+void ACardPlayer::GetPlayerHand(UWorld* const World, TArray<int32>& MyHand)
+{
+	// get Player Hand randomized from GameMode
+	ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
+	if (gamemode != nullptr) {
+		MyHand = gamemode->GiveCards();
+	}
+}
 
 
-// Called every frame
 void ACardPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	if (GEngine->GetNetMode(GetWorld()) == ENetMode::NM_Client) //code to only run on clients, will not run in single player / standalone
+	{
+		rotateOwnedCards();
+	}
 
 }
 
-
-
-void ACardPlayer::SetCardMesh() {
-	/*int i = 0;
-	if (PlayerCardArray.Num() != 0) {
-		for (auto card : PlayerCardArray) {
-			FRotator New = card->GetActorRotation();
-			//New.Pitch += 180;
-			card->SetActorRotation(New);
-			//UE_LOG(LogTemp, Warning, TEXT("Position of Card: %s"), *card->GetActorLocation().ToString())
-			//card->SetCardFromtInt(CardValues[i]);
-			card->SetCardValue(CardValues[i]);
-
-			i++;
+void ACardPlayer::rotateOwnedCards()
+{
+	TArray<AActor*> playersHand;
+	GetAttachedActors(playersHand, true);
+	if (IsLocallyControlled()) {
+		for (auto card : playersHand) {
+			FRotator rot = card->GetActorRotation();
+			rot.Roll = 0;
+			card->SetActorRotation(rot);
 		}
-	}*/
+	}
+}
+
+void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<int> MyHand) {
+	int i = 0;
+	auto cardPositions = CardHand->GetAllSocketNames();
+	for (FName socket : cardPositions) {
+		auto pos = CardHand->GetSocketTransform(socket);
+		FQuat rot = pos.GetRotation();
+		FRotator newRot = rot.Rotator();
+		newRot.Roll = 180;
+		pos.SetRotation(newRot.Quaternion());
+		if (PlayingCardClass != nullptr) {
+			auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
+			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+			card->AttachToActor(this, AttachmentRules, socket);
+			PlayerCardArray.Add(card);
+			CardValues.Add(MyHand[i]);
+			card->cardValue = MyHand[i];
+			card->OnRep_SetCardValue();
+		}
+		i++;
+	}
 }
 // Called to bind functionality to input
 void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -121,5 +124,15 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-
-
+void ACardPlayer::PlayCard(AActor* Card) {
+	if (HasAuthority()) {
+		int intValue = Cast<APlayingCard>(Card)->cardValue;
+		UWorld* World = GetWorld();
+		if (World != nullptr) {
+			auto gameMode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
+			gameMode->Trick(intValue);
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Card: %i"), intValue)
+	}
+	
+}

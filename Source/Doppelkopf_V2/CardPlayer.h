@@ -38,11 +38,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void GetPlayerHand(UWorld* const World, TArray<int32>& MyHand);
+
 	bool bCardsDealed = false;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void rotateOwnedCards();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -53,5 +57,7 @@ public:
 	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<int32> CardValues;
 
-	void SetCardMesh();
+	void PlayCard(AActor* Card);
+	bool bStartGame;
+	void SpawnCardHand(UWorld* const World, TArray<int> MyHand);
 };
