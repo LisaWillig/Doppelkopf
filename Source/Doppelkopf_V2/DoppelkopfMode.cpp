@@ -18,14 +18,12 @@ ADoppelkopfMode::ADoppelkopfMode() {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 }
+
 void ADoppelkopfMode::StartPlay() {
 	
-	UE_LOG(LogTemp, Warning, TEXT("Begin"))
 	ShuffleCards();
 	GameCalculation = GameLogic();
-
 	Super::StartPlay();
-	
 }
 
 

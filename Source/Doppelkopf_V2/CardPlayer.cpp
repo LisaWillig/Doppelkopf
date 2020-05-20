@@ -36,7 +36,7 @@ ACardPlayer::ACardPlayer()
 void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ACardPlayer, PlayerCardArray);
+	DOREPLIFETIME_CONDITION(ACardPlayer, PlayerCardArray,  COND_InitialOnly);
 	DOREPLIFETIME(ACardPlayer, CardValues);
 }
 
@@ -75,11 +75,18 @@ void ACardPlayer::GetPlayerHand(UWorld* const World, TArray<int32>& MyHand)
 void ACardPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (GEngine->GetNetMode(GetWorld()) == ENetMode::NM_Client) //code to only run on clients, will not run in single player / standalone
+	//rotateOwnedCards();
+	if (IsLocallyControlled()) {
+		TArray<AActor*> playersHand;
+		GetAttachedActors(playersHand, true);
+		for (auto card : playersHand) {
+			Cast<APlayingCard>(card)->SwapBackFront();
+		}
+	}
+	/*if (GEngine->GetNetMode(GetWorld()) == ENetMode::NM_Client) //code to only run on clients, will not run in single player / standalone
 	{
 		rotateOwnedCards();
-	}
+	}*/
 
 }
 
@@ -87,12 +94,10 @@ void ACardPlayer::rotateOwnedCards()
 {
 	TArray<AActor*> playersHand;
 	GetAttachedActors(playersHand, true);
-	if (IsLocallyControlled()) {
-		for (auto card : playersHand) {
-			FRotator rot = card->GetActorRotation();
-			rot.Roll = 0;
-			card->SetActorRotation(rot);
-		}
+	for (auto card : playersHand) {
+		FRotator rot = card->GetActorRotation();
+		rot.Roll = 0;
+		card->SetActorRotation(rot);
 	}
 }
 

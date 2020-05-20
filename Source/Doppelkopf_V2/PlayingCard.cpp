@@ -11,11 +11,8 @@ APlayingCard::APlayingCard()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
 	bReplicates = true;
-	
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayingCardMesh"));
-	CardMesh->SetIsReplicated(true);
 	RootComponent = CardMesh;
 }
 
@@ -24,10 +21,7 @@ void APlayingCard::BeginPlay()
 {
 	Super::BeginPlay();
 
-	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);
-
-	
-	
+	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);	
 }
 
 void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -35,7 +29,6 @@ void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(APlayingCard, cardValue);
-	DOREPLIFETIME(APlayingCard, CardMesh);
 }
 
 

@@ -19,13 +19,16 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
 	void SetCardFromtInt(int32 value);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
+	void SwapBackFront();
+
 	//UFUNCTION(BlueprintCallable, Category = "Card")
 	//void playThisCard();
 
 	UFUNCTION()
 	void OnRep_SetCardValue();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, replicated)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* CardMesh; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SetCardValue)
