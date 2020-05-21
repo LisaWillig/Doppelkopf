@@ -22,7 +22,6 @@ ADoppelkopfMode::ADoppelkopfMode() {
 void ADoppelkopfMode::StartPlay() {
 	
 	ShuffleCards();
-	GameCalculation = GameLogic();
 	Super::StartPlay();
 }
 
@@ -60,9 +59,8 @@ AActor* ADoppelkopfMode::ChoosePlayerStart_Implementation(AController* Player) {
 
 void ADoppelkopfMode::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
-	
-	int player = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState())->ActivePlayerIndex;
 }
+
 void ADoppelkopfMode::ShuffleCards() {
 
 	NewDeck.Empty();
@@ -87,10 +85,4 @@ TArray<int32> ADoppelkopfMode::GiveCards() {
 	}
 	askedForCards++;
 	return hand;		
-}
-
-
-void ADoppelkopfMode::Trick(int32 PlayedCard) {
-	UE_LOG(LogTemp, Warning, TEXT("Test"))
-	GameCalculation.AddCardToTrick(PlayedCard);
 }

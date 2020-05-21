@@ -47,4 +47,5 @@ public:
 	UFUNCTION()
 	void OnCardClicked(AActor* TouchedActor, FKey ButtonPressed);
 
+ 
 };

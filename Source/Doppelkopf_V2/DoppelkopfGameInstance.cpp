@@ -54,6 +54,12 @@ void UDoppelkopfGameInstance::Init() {
 	}
 }
 
+/*
+ONLINE SESSION
+
+Create Online Session & Join
+
+*/
 void UDoppelkopfGameInstance::OnCreateSessionComplete(FName SessionName, bool Success) {
 
 	if (!Success) {
@@ -184,13 +190,21 @@ void UDoppelkopfGameInstance::StartSession() {
 	SessionInterface->StartSession(SESSION_NAME);
 }
 
+
+/*
+MENU SYSTEM
+
+Create & Load Menus in the game
+
+*/
+
 void UDoppelkopfGameInstance::LoadMainMenu() {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
 
 	PlayerController->ClientTravel("/Game/Level/MainMenu", ETravelType::TRAVEL_Absolute);
-
 }
+
 ULobbyMenu_Server* UDoppelkopfGameInstance::LoadLobbyMenu() {
 	if (!ensure(LobbyMenuServerClass != nullptr))return nullptr;
 	LobbyMenu = CreateWidget<ULobbyMenu_Server>(this, LobbyMenuServerClass);
@@ -200,7 +214,7 @@ ULobbyMenu_Server* UDoppelkopfGameInstance::LoadLobbyMenu() {
 	return LobbyMenu;
 }
 
-// called from Blueprint
+// called from Blueprint for loading the widgets
 void UDoppelkopfGameInstance::LoadMenu() {
 	if (!ensure(MenuClass != nullptr))return;
 	Menu = CreateWidget<UMainMenu>(this, MenuClass);
@@ -213,6 +227,7 @@ void UDoppelkopfGameInstance::RemoveLobbyMenu() {
 	if (!ensure(LobbyMenu != nullptr))return;
 	LobbyMenu->RemoveMenu();
 }
+
 void UDoppelkopfGameInstance::LoadInGameMenu() {
 	if (!ensure(InGameMenuClass != nullptr))return;
 	UInGameMenu* InGameMenu = CreateWidget<UInGameMenu>(this, InGameMenuClass);
@@ -221,6 +236,10 @@ void UDoppelkopfGameInstance::LoadInGameMenu() {
 	InGameMenu->SetMenuInterface(this);
 }
 
+/*
+EXIT GAME
+
+*/
 void UDoppelkopfGameInstance::QuitGame() {
 	auto* playerController = GetWorld()->GetFirstPlayerController();
 	if (!ensure(playerController != nullptr)) return;

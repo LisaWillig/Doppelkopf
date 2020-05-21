@@ -17,8 +17,6 @@ class DOPPELKOPF_V2_API ADoppelkopfMode : public AGameMode
 	virtual void PostLogin(APlayerController* NewPlayerController) override;
 	virtual void StartPlay() override;
 
-
-
 public:
 
 	ADoppelkopfMode();
@@ -26,16 +24,13 @@ public:
 	TArray<int32> NewDeck;
 	TArray<int32> GiveCards();
 
-	UFUNCTION(BlueprintCallAble)
-	void Trick(int PlayedCard);
-
 	void Tick(float DeltaTime);
 	
 	//UFUNCTION()
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
 private:
 
-	GameLogic GameCalculation;
 
 	int askedForCards = 0;
 	TArray<int32> CardDeck = { 

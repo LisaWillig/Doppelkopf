@@ -40,7 +40,7 @@ protected:
 
 	void GetPlayerHand(UWorld* const World, TArray<int32>& MyHand);
 
-	bool bCardsDealed = false;
+	bool bTurnCards;
 
 public:	
 	// Called every frame
@@ -60,4 +60,5 @@ public:
 	void PlayCard(AActor* Card);
 	bool bStartGame;
 	void SpawnCardHand(UWorld* const World, TArray<int> MyHand);
+
 };

@@ -5,6 +5,8 @@
 #include "GameFramework/Pawn.h"
 #include "DoppelkopfPlayerState.h"
 #include "CardPlayer.h"
+#include "DoppelkopfGameState.h"
+#include "Engine.h"
 
 ADoppelkopfPlayerController::ADoppelkopfPlayerController() {
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -40,6 +42,13 @@ void ADoppelkopfPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("CardClicked", EInputEvent::IE_Released, this, &ADoppelkopfPlayerController::clickCard);
 }
 
+void ADoppelkopfPlayerController::SetActivePlayer_Implementation() {
+	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
+	if (gamestate != nullptr) {
+		gamestate->SetActivePlayer();
+	}
+}
+
 void ADoppelkopfPlayerController::clickCard() {
 	APawn* myPlayer = GetPawn();
 	if (myPlayer != nullptr) {
@@ -50,8 +59,8 @@ void ADoppelkopfPlayerController::clickCard() {
 		if (MouseResult.bBlockingHit) {
 			bool bFound = playersHand.Contains(MouseResult.GetActor());
 			if (bFound) {
-				UE_LOG(LogTemp, Warning, TEXT("I own it!"))
 				Cast<ACardPlayer>(myPlayer)->PlayCard(MouseResult.GetActor());
+				SetActivePlayer();
 			}
 		}
 	}

@@ -16,6 +16,7 @@ void GameLogic::ResetTrick() {
 	CurrentTrick.Empty();
 }
 void GameLogic::AddCardToTrick(int32 MeshValue) {
+	UE_LOG(LogTemp, Warning, TEXT("Card Played: %i"), MeshValue)
 	CurrentTrick.Add(CardGameValue[MeshValue]);
 	TrickCardCount++;
 	if (TrickCardCount == 4) {

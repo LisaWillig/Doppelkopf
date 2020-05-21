@@ -11,7 +11,7 @@
 #include "GameFrameWork/GameState.h"
 #include "Engine/EngineTypes.h"
 #include "Engine.h"
-
+#include "DoppelkopfGameState.h"
 
 ACardPlayer::ACardPlayer()
 {
@@ -75,30 +75,24 @@ void ACardPlayer::GetPlayerHand(UWorld* const World, TArray<int32>& MyHand)
 void ACardPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//rotateOwnedCards();
+
 	if (IsLocallyControlled()) {
-		TArray<AActor*> playersHand;
-		GetAttachedActors(playersHand, true);
-		for (auto card : playersHand) {
-			Cast<APlayingCard>(card)->SwapBackFront();
-		}
-	}
-	/*if (GEngine->GetNetMode(GetWorld()) == ENetMode::NM_Client) //code to only run on clients, will not run in single player / standalone
-	{
 		rotateOwnedCards();
-	}*/
+
+	}
 
 }
 
 void ACardPlayer::rotateOwnedCards()
 {
-	TArray<AActor*> playersHand;
-	GetAttachedActors(playersHand, true);
-	for (auto card : playersHand) {
-		FRotator rot = card->GetActorRotation();
-		rot.Roll = 0;
-		card->SetActorRotation(rot);
-	}
+	
+		TArray<AActor*> playersHand;
+		GetAttachedActors(playersHand, true);
+
+		for (auto card : playersHand) {
+			Cast<APlayingCard>(card)->SwapBackFront();
+		}
+	
 }
 
 void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<int> MyHand) {
@@ -130,14 +124,9 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 void ACardPlayer::PlayCard(AActor* Card) {
-	if (HasAuthority()) {
-		int intValue = Cast<APlayingCard>(Card)->cardValue;
-		UWorld* World = GetWorld();
-		if (World != nullptr) {
-			auto gameMode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
-			gameMode->Trick(intValue);
-		}
-		UE_LOG(LogTemp, Warning, TEXT("Card: %i"), intValue)
+	int32 cardToPlay = Cast<APlayingCard>(Card)->cardValue;
+	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
+	if (gamestate != nullptr) {
+		gamestate->Trick(cardToPlay);
 	}
-	
 }

@@ -3,6 +3,7 @@
 
 #include "DoppelkopfGameState.h"
 #include "DoppelkopfPlayerState.h"
+#include "Net/UnrealNetwork.h"
 
 
 ADoppelkopfGameState::ADoppelkopfGameState() {
@@ -12,8 +13,14 @@ ADoppelkopfGameState::ADoppelkopfGameState() {
 
 void ADoppelkopfGameState::BeginPlay() {
 	Super::BeginPlay();
+	GameCalculation = GameLogic();
 }
 
+void ADoppelkopfGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ADoppelkopfGameState, ActivePlayerIndex);
+}
 
 void ADoppelkopfGameState::Tick(float DeltaTime) {
 	
@@ -23,8 +30,19 @@ void ADoppelkopfGameState::Tick(float DeltaTime) {
 		bPlay = HasBegunPlay();
 	}
 	if (PlayerArray.Num() == 4) {
-		ActivePlayerIndex = 0;
-		Cast<ADoppelkopfPlayerState>(PlayerArray[1])->myTurn = true;
+		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->myTurn = true;
 	}
-	    
+
 }
+
+void ADoppelkopfGameState::Trick(int32 PlayedCard) {
+	Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->myTurn = false;
+		GameCalculation.AddCardToTrick(PlayedCard); 
+		
+}
+
+
+void ADoppelkopfGameState::SetActivePlayer() {
+	ActivePlayerIndex = (ActivePlayerIndex + 1) % 4;
+}
+

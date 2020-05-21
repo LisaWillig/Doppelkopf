@@ -21,4 +21,8 @@ public:
     class ADoppelkopfPlayerState* myPlayerState = nullptr;
     virtual void SetupInputComponent() override;
     void clickCard();
+
+    UFUNCTION(Server, reliable)
+	void SetActivePlayer();
+       
 };
