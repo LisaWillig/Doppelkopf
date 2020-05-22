@@ -4,6 +4,8 @@
 #include "DoppelkopfPlayerState.h"
 #include "Engine.h"
 #include "Net/UnrealNetwork.h"
+#include "DoppelkopfPlayerController.h"
+
 
 ADoppelkopfPlayerState::ADoppelkopfPlayerState() {
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -12,9 +14,14 @@ ADoppelkopfPlayerState::ADoppelkopfPlayerState() {
 
 void ADoppelkopfPlayerState::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
-
 }
 
+void ADoppelkopfPlayerState::ActivatePlayerControllersTurn() {
+    auto test = Cast<ADoppelkopfPlayerController>(GetPawn()->GetController());
+    if (test != nullptr) {
+        test->SetActive();
+    }
+}
 void ADoppelkopfPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
     DOREPLIFETIME(ADoppelkopfPlayerState, myTurn);

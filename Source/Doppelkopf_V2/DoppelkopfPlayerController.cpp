@@ -13,8 +13,6 @@ ADoppelkopfPlayerController::ADoppelkopfPlayerController() {
 	PrimaryActorTick.bCanEverTick = true;
 	bEnableClickEvents = true;
 
-	//FInputModeGameAndUI mode;
-	//SetInputMode(mode);
 }
 
 void ADoppelkopfPlayerController::Tick(float DeltaTime) {
@@ -24,16 +22,18 @@ void ADoppelkopfPlayerController::Tick(float DeltaTime) {
 	if (myPlayerState == nullptr) {
 		myPlayerState = Cast<ADoppelkopfPlayerState>(AController::PlayerState);
 	}
-	else {
-		if (myPlayerState->myTurn == false) {
-			FInputModeUIOnly mode;
-			SetInputMode(mode);
-		}
-		else {
-			FInputModeGameAndUI mode;
-			SetInputMode(mode);
-		}
-	}
+}
+
+void ADoppelkopfPlayerController::SetInactive() {
+	myPlayerState->myTurn = false;
+	FInputModeUIOnly mode;
+	SetInputMode(mode);
+}
+
+void ADoppelkopfPlayerController::SetActive() {
+	myPlayerState->myTurn = true;
+	FInputModeGameAndUI mode;
+	SetInputMode(mode);
 }
 
 void ADoppelkopfPlayerController::SetupInputComponent() {
@@ -42,11 +42,20 @@ void ADoppelkopfPlayerController::SetupInputComponent() {
 	InputComponent->BindAction("CardClicked", EInputEvent::IE_Released, this, &ADoppelkopfPlayerController::clickCard);
 }
 
-void ADoppelkopfPlayerController::SetActivePlayer_Implementation() {
+void ADoppelkopfPlayerController::Server_SetActivePlayer_Implementation() {
+	SetInactive();
 	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
 	if (gamestate != nullptr) {
 		gamestate->SetActivePlayer();
 	}
+}
+
+void ADoppelkopfPlayerController::Server_AddCardToTrick_Implementation(int32 card) {
+	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
+	if (gamestate != nullptr) {
+		gamestate->Trick(card);
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Added Card"))
 }
 
 void ADoppelkopfPlayerController::clickCard() {
@@ -59,8 +68,10 @@ void ADoppelkopfPlayerController::clickCard() {
 		if (MouseResult.bBlockingHit) {
 			bool bFound = playersHand.Contains(MouseResult.GetActor());
 			if (bFound) {
-				Cast<ACardPlayer>(myPlayer)->PlayCard(MouseResult.GetActor());
-				SetActivePlayer();
+				int32 myCard = Cast<ACardPlayer>(myPlayer)->PlayCard(MouseResult.GetActor());
+				Server_AddCardToTrick(myCard);
+				SetInactive();
+				Server_SetActivePlayer();
 			}
 		}
 	}

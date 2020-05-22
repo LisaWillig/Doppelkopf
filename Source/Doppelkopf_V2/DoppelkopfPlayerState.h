@@ -21,4 +21,6 @@ public:
 	bool myTurn = false;
 	ADoppelkopfPlayerState();
 
+	void ActivatePlayerControllersTurn();
+
 };

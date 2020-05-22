@@ -34,4 +34,6 @@ public:
 	void SetActivePlayer();
 
 	GameLogic GameCalculation;
+
+	
 };

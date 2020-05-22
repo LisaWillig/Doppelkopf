@@ -13,7 +13,10 @@ ADoppelkopfGameState::ADoppelkopfGameState() {
 
 void ADoppelkopfGameState::BeginPlay() {
 	Super::BeginPlay();
-	GameCalculation = GameLogic();
+
+	if (HasAuthority()) {
+		GameCalculation = GameLogic();
+	}
 }
 
 void ADoppelkopfGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -30,17 +33,13 @@ void ADoppelkopfGameState::Tick(float DeltaTime) {
 		bPlay = HasBegunPlay();
 	}
 	if (PlayerArray.Num() == 4) {
-		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->myTurn = true;
+		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->ActivatePlayerControllersTurn();
 	}
-
 }
 
 void ADoppelkopfGameState::Trick(int32 PlayedCard) {
-	Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->myTurn = false;
-		GameCalculation.AddCardToTrick(PlayedCard); 
-		
+	GameCalculation.AddCardToTrick(PlayedCard); 	
 }
-
 
 void ADoppelkopfGameState::SetActivePlayer() {
 	ActivePlayerIndex = (ActivePlayerIndex + 1) % 4;

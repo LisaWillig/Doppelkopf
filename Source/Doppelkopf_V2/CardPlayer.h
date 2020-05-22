@@ -57,7 +57,7 @@ public:
 	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<int32> CardValues;
 
-	void PlayCard(AActor* Card);
+	int32 PlayCard(AActor* Card);
 	bool bStartGame;
 	void SpawnCardHand(UWorld* const World, TArray<int> MyHand);
 

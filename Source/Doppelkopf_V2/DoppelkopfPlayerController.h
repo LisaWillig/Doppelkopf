@@ -23,6 +23,13 @@ public:
     void clickCard();
 
     UFUNCTION(Server, reliable)
-	void SetActivePlayer();
+	void Server_SetActivePlayer();
+
+	UFUNCTION(Server, reliable)
+	void Server_AddCardToTrick(int32 card);
+
+    void SetInactive();
+    void SetActive();
+
        
 };

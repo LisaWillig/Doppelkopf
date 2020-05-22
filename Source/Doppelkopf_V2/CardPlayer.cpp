@@ -123,10 +123,10 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-void ACardPlayer::PlayCard(AActor* Card) {
-	int32 cardToPlay = Cast<APlayingCard>(Card)->cardValue;
-	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
+int32 ACardPlayer::PlayCard(AActor* Card) {
+	return Cast<APlayingCard>(Card)->cardValue;
+	/*auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
 	if (gamestate != nullptr) {
 		gamestate->Trick(cardToPlay);
-	}
+	}*/
 }
