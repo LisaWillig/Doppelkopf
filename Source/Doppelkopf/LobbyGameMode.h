@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DoppelkopfGameMode.h"
+#include "GameFramework/GameMode.h"
 #include "LobbyGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOPPELKOPF_API ALobbyGameMode : public ADoppelkopfGameMode
+class DOPPELKOPF_API ALobbyGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	

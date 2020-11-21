@@ -122,6 +122,11 @@ void UDoppelkopfGameInstance::Host(FText UserServerName) {
 }
 
 void UDoppelkopfGameInstance::UpdateServerList() {
+
+	// has to be new, because by definition of the SessionSearch parameter in the 
+	// SessionInterface->FindSessions(playerInd, Sessionsearch) needs to be on th heap, 
+	// not in the stack. It has to live longer then the session.
+	// MakeShareable: converts standard C++ ptr into a refernce counting ptr for Unreal
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 
 	if (SessionSearch.IsValid()) {
@@ -135,6 +140,12 @@ void UDoppelkopfGameInstance::UpdateServerList() {
 			}
 		SessionSearch->MaxSearchResults = 100;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
+
+		// .ToSharedRef() -> You can create a Shared Reference from a Shared Pointer 
+		// with the Shared Pointer function, ToSharedRef, as long as the Shared Pointer 
+		// references a non-null object. Attempting to create a Shared Reference from a 
+		// null Shared Pointer will cause the program to assert.
+		// https://docs.unrealengine.com/en-US/Programming/UnrealArchitecture/SmartPointerLibrary/SharedPointer/index.html
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }
