@@ -72,9 +72,9 @@ void ADoppelkopfMode::ShuffleCards() {
 	askedForCards = 0;
 }
 
-TArray<int32> ADoppelkopfMode::GiveCards() {
+TArray<uint8> ADoppelkopfMode::GiveCards() {
 
-	TArray<int32> hand;
+	TArray<uint8> hand;
 	if (askedForCards >= 4) {
 		hand.Init(0, 12);
 		return hand;

@@ -38,7 +38,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void GetPlayerHand(UWorld* const World, TArray<int32>& MyHand);
+	void GetPlayerHand(UWorld* const World);
 
 	bool bTurnCards;
 
@@ -55,10 +55,11 @@ public:
 	TArray<APlayingCard*> PlayerCardArray;
 
 	UPROPERTY(VisibleAnywhere, replicated)
-	TArray<int32> CardValues;
+	TArray<uint8> CardValues;
 
 	int32 PlayCard(AActor* Card);
 	bool bStartGame;
-	void SpawnCardHand(UWorld* const World, TArray<int> MyHand);
+	void SortPlayerHand(TArray<uint8>& MyHand);
+	void SpawnCardHand(UWorld* const World, TArray<uint8> MyHand);
 
 };

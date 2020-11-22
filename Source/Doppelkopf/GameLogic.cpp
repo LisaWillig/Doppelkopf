@@ -15,13 +15,13 @@ void GameLogic::ResetTrick() {
 	TrickCardCount = 0;
 	CurrentTrick.Empty();
 }
-void GameLogic::AddCardToTrick(int32 MeshValue) {
+void GameLogic::AddCardToTrick(uint8 MeshValue) {
 	UE_LOG(LogTemp, Warning, TEXT("Card Played: %i, Nb in Trick: %i"), MeshValue, CurrentTrick.Num())
 	CurrentTrick.Add(CardGameValue[MeshValue]);
 	TrickCardCount++;
 	if (TrickCardCount == 4) {
 
-		int32 trickwinner = CalculateTrickResult(CurrentTrick);
+		uint8 trickwinner = CalculateTrickResult(CurrentTrick);
 		UE_LOG(LogTemp, Warning, TEXT("Winner of the Trick: %i"), trickwinner)
 		ResetTrick();
 	}
@@ -29,13 +29,13 @@ void GameLogic::AddCardToTrick(int32 MeshValue) {
 }
 
 
-int32 GameLogic::CalculateTrickResult(TArray<int32> Trick) {
+uint8 GameLogic::CalculateTrickResult(TArray<uint8> Trick) {
 	CheckTrickSpecial(Trick);
 
-	int32 highestCard = Trick[0];
-	int32 indexTrickWinner = 0;
+	uint8 highestCard = Trick[0];
+	uint8 indexTrickWinner = 0;
 	// Farbstich ohne Trumpf
-	if (!Trick.ContainsByPredicate([](int32 item) {return item > 30;})) {
+	if (!Trick.ContainsByPredicate([](uint8 item) {return item > 30;})) {
 		// Herzstich
 		if (Trick[0] < 10){
 			for (int i = 1; i < 4; i++) {
@@ -84,6 +84,6 @@ int32 GameLogic::CalculateTrickResult(TArray<int32> Trick) {
 	return indexTrickWinner;
 }
 
-void GameLogic::CheckTrickSpecial(TArray<int32> Trick) {
+void GameLogic::CheckTrickSpecial(TArray<uint8> Trick) {
 	// check if trick contains special points
 }

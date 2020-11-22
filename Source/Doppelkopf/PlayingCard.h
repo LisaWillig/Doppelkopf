@@ -32,7 +32,7 @@ public:
 	class UStaticMeshComponent* CardMesh; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SetCardValue)
-	int32 cardValue;
+	uint8 cardValue;
 
 
 protected:

@@ -12,80 +12,83 @@ class DOPPELKOPF_API GameLogic
 public:
 	GameLogic();
 
-	void AddCardToTrick(int32 MeshValue);
+	void AddCardToTrick(uint8 MeshValue);
 	~GameLogic();
 
-private:
-
-	TMap<int32, FString> Sonderpunkte; 
-
-	int32 CalculateTrickResult(TArray<int32> CurrentTrick);
-	void ResetTrick();
-	int32 TrickCardCount = 0;
-	TArray<int32> CurrentTrick;
-	void CheckTrickSpecial(TArray<int32> Trick);
-
+public:
 	// Mesh Value : Game value	
-	TMap <int32, int32> CardGameValue = {
+	TMap <uint8, uint8> CardGameValue = {
 
 		// ~~~ Colors ~~~~
 
 		// Heart Nine
-		TPairInitializer<const int32&, const int32&>(13, 1),
+		TPairInitializer<const uint8&, const uint8&>(13, 1),
 		// Heart King
-		TPairInitializer<const int32&, const int32&>(17, 2), 
+		TPairInitializer<const uint8&, const uint8&>(17, 2),
 		// Heart Ace
-		TPairInitializer<const int32&, const int32&>(12, 4),
+		TPairInitializer<const uint8&, const uint8&>(12, 4),
 
 		// Spade Nine
-		TPairInitializer<const int32&, const int32&>(19, 11),
+		TPairInitializer<const uint8&, const uint8&>(19, 11),
 		// Spade King
-		TPairInitializer<const int32&, const int32&>(23, 12),
+		TPairInitializer<const uint8&, const uint8&>(23, 12),
 		// Spade 10
-		TPairInitializer<const int32&, const int32&>(20, 13),
+		TPairInitializer<const uint8&, const uint8&>(20, 13),
 		// Spade Ace
-		TPairInitializer<const int32&, const int32&>(18, 14),
+		TPairInitializer<const uint8&, const uint8&>(18, 14),
 
 		// Clubs Nine
-		TPairInitializer<const int32&, const int32&>(7, 21),
+		TPairInitializer<const uint8&, const uint8&>(7, 21),
 		// Clubs King
-		TPairInitializer<const int32&, const int32&>(11, 22),
+		TPairInitializer<const uint8&, const uint8&>(11, 22),
 		// Clubs Ten
-		TPairInitializer<const int32&, const int32&>(8, 23),
+		TPairInitializer<const uint8&, const uint8&>(8, 23),
 		//Clubs Ace
-		TPairInitializer<const int32&, const int32&>(6, 24),
+		TPairInitializer<const uint8&, const uint8&>(6, 24),
 
 		// ~~~ Trump ~~~~
 
 		// Diamond Nine
-		TPairInitializer<const int32&, const int32&>(1, 31),
+		TPairInitializer<const uint8&, const uint8&>(1, 31),
 		// Diamond King
-		TPairInitializer<const int32&, const int32&>(5, 32),
+		TPairInitializer<const uint8&, const uint8&>(5, 32),
 		// Diamond Ten
-		TPairInitializer<const int32&, const int32&>(2, 33),
+		TPairInitializer<const uint8&, const uint8&>(2, 33),
 		// Diamons Ace
-		TPairInitializer<const int32&, const int32&>(0, 34),
+		TPairInitializer<const uint8&, const uint8&>(0, 34),
 
 		// Diamond Jack 
-		TPairInitializer<const int32&, const int32&>(3, 41),
+		TPairInitializer<const uint8&, const uint8&>(3, 41),
 		// Heart Jack
-		TPairInitializer<const int32&, const int32&>(15, 42),
+		TPairInitializer<const uint8&, const uint8&>(15, 42),
 		// Spades Jack
-		TPairInitializer<const int32&, const int32&>(21, 43),
+		TPairInitializer<const uint8&, const uint8&>(21, 43),
 		// Clubs Jack
-		TPairInitializer<const int32&, const int32&>(9, 43),
+		TPairInitializer<const uint8&, const uint8&>(9, 43),
 
 		// Diamond Queen
-		TPairInitializer<const int32&, const int32&>(4, 51),
+		TPairInitializer<const uint8&, const uint8&>(4, 51),
 		// Heart Queen
-		TPairInitializer<const int32&, const int32&>(16, 52),
+		TPairInitializer<const uint8&, const uint8&>(16, 52),
 		// Spades Queen
-		TPairInitializer<const int32&, const int32&>(22, 53),
+		TPairInitializer<const uint8&, const uint8&>(22, 53),
 		// Clubs Queen
-		TPairInitializer<const int32&, const int32&>(10, 54),
+		TPairInitializer<const uint8&, const uint8&>(10, 54),
 
 		// Heart Ten
-		TPairInitializer<const int32&, const int32&>(14, 61),
-	
+		TPairInitializer<const uint8&, const uint8&>(14, 61),
+
 	};
+
+private:
+
+	TMap<uint8, FString> Sonderpunkte; 
+
+	uint8 CalculateTrickResult(TArray<uint8> CurrentTrick);
+	void ResetTrick();
+	uint8 TrickCardCount = 0;
+	TArray<uint8> CurrentTrick;
+	void CheckTrickSpecial(TArray<uint8> Trick);
+
+
 };

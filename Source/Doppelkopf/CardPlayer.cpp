@@ -11,6 +11,7 @@
 #include "GameFrameWork/GameState.h"
 #include "Engine/EngineTypes.h"
 #include "Engine.h"
+#include "GameLogic.h"
 #include "DoppelkopfGameState.h"
 
 ACardPlayer::ACardPlayer()
@@ -45,7 +46,7 @@ void ACardPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TArray<int32> MyHand;
+	
 	UWorld* const World = GetWorld();
 
 	if (HasAuthority()) {
@@ -55,22 +56,31 @@ void ACardPlayer::BeginPlay()
 		CardValues.Empty();
 
 		if (World != nullptr) {
-			GetPlayerHand(World, MyHand);
-			SpawnCardHand(World, MyHand);
+			GetPlayerHand(World);
+			SpawnCardHand(World, CardValues);
 		}
 	}
 
 }
 
-void ACardPlayer::GetPlayerHand(UWorld* const World, TArray<int32>& MyHand)
+void ACardPlayer::GetPlayerHand(UWorld* const World)
 {
 	// get Player Hand randomized from GameMode
 	ADoppelkopfMode* gamemode = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(World));
+	GameLogic MyGame = GameLogic();
+	TArray<uint8> MyHand;
 	if (gamemode != nullptr) {
 		MyHand = gamemode->GiveCards();
 	}
+	for (auto card : MyHand){
+		CardValues.Add(MyGame.CardGameValue[card]);
+	}
+	SortPlayerHand(CardValues);
 }
 
+void ACardPlayer::SortPlayerHand(TArray<uint8>& Hand) {
+	Hand.Sort();
+}
 
 void ACardPlayer::Tick(float DeltaTime)
 {
@@ -95,8 +105,9 @@ void ACardPlayer::rotateOwnedCards()
 	
 }
 
-void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<int> MyHand) {
+void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<uint8> MyHand) {
 	int i = 0;
+	GameLogic MyGame = GameLogic();
 	auto cardPositions = CardHand->GetAllSocketNames();
 	for (FName socket : cardPositions) {
 		auto pos = CardHand->GetSocketTransform(socket);
@@ -109,8 +120,8 @@ void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<int> MyHand) {
 			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
 			card->AttachToActor(this, AttachmentRules, socket);
 			PlayerCardArray.Add(card);
-			CardValues.Add(MyHand[i]);
-			card->cardValue = MyHand[i];
+			
+			card->cardValue = *MyGame.CardGameValue.FindKey(MyHand[i]);
 			card->OnRep_SetCardValue();
 		}
 		i++;
