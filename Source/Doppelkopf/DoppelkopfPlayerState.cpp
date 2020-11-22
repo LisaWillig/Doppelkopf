@@ -17,6 +17,9 @@ void ADoppelkopfPlayerState::Tick(float DeltaTime) {
 }
 
 void ADoppelkopfPlayerState::ActivatePlayerControllersTurn() {
+    if (GetPawn() == nullptr) {
+        return;
+    }
     auto test = Cast<ADoppelkopfPlayerController>(GetPawn()->GetController());
     if (test != nullptr) {
         test->SetActive();

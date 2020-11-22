@@ -15,6 +15,7 @@ void UMenuWidget::Setup() {
 	if (!ensure(World != nullptr)) return;
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
+	if (PlayerController == nullptr) return;
 	UE_LOG(LogTemp, Warning, TEXT("PLAYER CONTROLLER: %s"), *PlayerController->GetName())
 		FInputModeGameAndUI InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);

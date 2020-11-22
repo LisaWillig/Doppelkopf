@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Card)
 	TSubclassOf<APlayingCard> PlayingCardClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "PlaySettings")
+	bool bInverteHand = true;
+
 	//UFUNCTION(BlueprintCallable, Category = Card)
 	//void PlayCard(int32 card);
 
@@ -56,7 +59,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<uint8> CardValues;
-
+	FTimerHandle AllCardsSpawnedTimer;
+	void MoveOwnCards();
 	int32 PlayCard(AActor* Card);
 	bool bStartGame;
 	void SortPlayerHand(TArray<uint8>& MyHand);

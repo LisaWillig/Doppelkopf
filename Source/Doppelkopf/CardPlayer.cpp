@@ -12,6 +12,7 @@
 #include "Engine/EngineTypes.h"
 #include "Engine.h"
 #include "GameLogic.h"
+#include "GameFramework/PlayerController.h"
 #include "DoppelkopfGameState.h"
 
 ACardPlayer::ACardPlayer()
@@ -60,6 +61,10 @@ void ACardPlayer::BeginPlay()
 			SpawnCardHand(World, CardValues);
 		}
 	}
+	//after begin play (eg. all cards are dealed)
+	if (IsLocallyControlled()) {
+		GetWorld()->GetTimerManager().SetTimer(AllCardsSpawnedTimer, this, &ACardPlayer::MoveOwnCards, 1.0f, false);
+	}
 
 }
 
@@ -86,11 +91,6 @@ void ACardPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsLocallyControlled()) {
-		rotateOwnedCards();
-
-	}
-
 }
 
 void ACardPlayer::rotateOwnedCards()
@@ -101,7 +101,62 @@ void ACardPlayer::rotateOwnedCards()
 
 		for (auto card : playersHand) {
 			Cast<APlayingCard>(card)->SwapBackFront();
+			Cast<APlayingCard>(card)->SetActorScale3D(FVector(2, 2, 2));
 		}
+	
+}
+
+void ACardPlayer::MoveOwnCards()
+{
+	if (!bStartGame) {
+		rotateOwnedCards();
+		bStartGame = true;
+	}
+
+	TArray<AActor*> playersHand;
+	GetAttachedActors(playersHand, true);
+	uint8 NbCurrentCards = playersHand.Num();
+	int32 ResolutionX;
+	int32 ResolutionY;
+	APlayerController* playerController = Cast<APlayerController>(GetController());
+	playerController->GetViewportSize(ResolutionX, ResolutionY);
+	this->GetActorLocation();
+	
+	int32 HalfPoint = ResolutionX / 2;
+	int32 thirdFromHalf =  HalfPoint / 3;
+	int32 totalLengthCard = thirdFromHalf * 2;
+	int32 stepEachCard = totalLengthCard / 12;
+	
+	TArray<FVector> CardOffsetPositions;
+	
+	for (int i = 0; i < 12; i++) {
+		FVector2D ScreenPosition(0.0, thirdFromHalf + i * stepEachCard);
+		FVector WorldPosition;
+		FVector WorldDirection;
+		UGameplayStatics::DeprojectScreenToWorld
+		(
+			playerController,
+			ScreenPosition,
+			WorldPosition,
+			WorldDirection
+		);
+
+		if (ScreenPosition.X < HalfPoint) {
+			CardOffsetPositions.Add(FVector(-WorldPosition.X, -WorldPosition.Y, i * 0.02));
+		}
+		else {
+			CardOffsetPositions.Add(FVector(WorldPosition.X, WorldPosition.Y, i * 0.02));
+		}
+	}
+	int i = 0;
+	for (auto card : playersHand) {
+		FTransform currentPos = Cast<APlayingCard>(card)->GetActorTransform();
+		
+		currentPos.SetRela(currentPos.GetLocation() + CardOffsetPositions[i]);
+		card->SetActorTransform(currentPos);
+		i++;
+	}
+		
 	
 }
 
@@ -109,18 +164,37 @@ void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<uint8> MyHand) {
 	int i = 0;
 	GameLogic MyGame = GameLogic();
 	auto cardPositions = CardHand->GetAllSocketNames();
+	if (bInverteHand) {
+		cardPositions.Sort([](const FName& A, const FName& B) {
+			return A > B;
+			});
+	}
+	else {
+		cardPositions.Sort();
+	}
+	
+	//spawn card hand
 	for (FName socket : cardPositions) {
+
+		// get socket transform 
 		auto pos = CardHand->GetSocketTransform(socket);
+
+		// rotate cards to show their back side
 		FQuat rot = pos.GetRotation();
 		FRotator newRot = rot.Rotator();
 		newRot.Roll = 180;
 		pos.SetRotation(newRot.Quaternion());
+
+		// Scale cards from other players down 
+		FVector scale = pos.GetScale3D();
+		pos.SetScale3D(scale * 0.5);
+
+
 		if (PlayingCardClass != nullptr) {
 			auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
 			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
 			card->AttachToActor(this, AttachmentRules, socket);
 			PlayerCardArray.Add(card);
-			
 			card->cardValue = *MyGame.CardGameValue.FindKey(MyHand[i]);
 			card->OnRep_SetCardValue();
 		}
