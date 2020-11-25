@@ -12,6 +12,7 @@
 #include "Engine/EngineTypes.h"
 #include "Engine.h"
 #include "GameLogic.h"
+#include "UnrealClient.h"
 #include "GameFramework/PlayerController.h"
 #include "DoppelkopfGameState.h"
 
@@ -33,6 +34,8 @@ ACardPlayer::ACardPlayer()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCamera"));
 	Camera->SetupAttachment(CardHand);
 	Camera->bUsePawnControlRotation = false; 
+
+	GEngine->GameViewport->Viewport->ViewportResizedEvent.AddUObject(this, &ACardPlayer::rescaleToWindowSize);
 }
 
 void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -68,6 +71,59 @@ void ACardPlayer::BeginPlay()
 
 }
 
+void ACardPlayer::rescaleToWindowSize(FViewport* ViewPort, uint32 val) {
+	if (!bStartGame) { return; }
+	TArray<AActor*> playersHand;
+	GetAttachedActors(playersHand, true);
+	uint8 NbCurrentCards = playersHand.Num();
+	int32 ResolutionX;
+	int32 ResolutionY;
+	APlayerController* playerController = Cast<APlayerController>(GetController());
+	playerController->GetViewportSize(ResolutionX, ResolutionY);
+	this->GetActorLocation();
+
+	int32 ScreenThird = ResolutionX / 3;
+	int32 totalLengthCard = ScreenThird * 2;
+	int32 stepEachCard = totalLengthCard / 12;
+
+	TArray<FVector> CardOffsetPositions;
+	CardOffsetPositions.Init(FVector(0, 0, 0), 12);
+
+	FVector2D ScreenPositionLeft(ScreenThird, 0);
+	FVector WorldPositionLeft;
+	FVector WorldDirection;
+	UGameplayStatics::DeprojectScreenToWorld
+	(
+		playerController,
+		ScreenPositionLeft,
+		WorldPositionLeft,
+		WorldDirection
+	);
+
+	FVector2D ScreenPositionRight(ScreenThird * 2, 0);
+	FVector WorldPositionRight;
+	UGameplayStatics::DeprojectScreenToWorld
+	(
+		playerController,
+		ScreenPositionRight,
+		WorldPositionRight,
+		WorldDirection
+	);
+
+	for (int i = 0; i < 6; i++) {
+		CardOffsetPositions[i] = FVector(-WorldPositionLeft.X + i * stepEachCard, 0, i * 0.02);
+		CardOffsetPositions[11 - i] = FVector(WorldPositionRight.X - (11 - i) * stepEachCard, 0, i * 0.02);
+	}
+	int i = 0;
+	for (auto card : playersHand) {
+		FVector currentPos = Cast<APlayingCard>(card)->GetActorLocation();
+		//card->SetActorLocation(currentPos + );
+		//card->SetPivotOffset(CardOffsetPositions[i]);
+		//card->AddActorLocalOffset(CardOffsetPositions[i]);
+		card->SetActorLocation(currentPos + CardOffsetPositions[i]);
+		i++;
+	}
+}
 void ACardPlayer::GetPlayerHand(UWorld* const World)
 {
 	// get Player Hand randomized from GameMode
@@ -112,50 +168,10 @@ void ACardPlayer::MoveOwnCards()
 		rotateOwnedCards();
 		bStartGame = true;
 	}
-
-	TArray<AActor*> playersHand;
-	GetAttachedActors(playersHand, true);
-	uint8 NbCurrentCards = playersHand.Num();
-	int32 ResolutionX;
-	int32 ResolutionY;
 	APlayerController* playerController = Cast<APlayerController>(GetController());
-	playerController->GetViewportSize(ResolutionX, ResolutionY);
-	this->GetActorLocation();
+	FViewport* port = GEngine->GameViewport->Viewport;
+	rescaleToWindowSize(port, 0);
 	
-	int32 HalfPoint = ResolutionX / 2;
-	int32 thirdFromHalf =  HalfPoint / 3;
-	int32 totalLengthCard = thirdFromHalf * 2;
-	int32 stepEachCard = totalLengthCard / 12;
-	
-	TArray<FVector> CardOffsetPositions;
-	
-	for (int i = 0; i < 12; i++) {
-		FVector2D ScreenPosition(0.0, thirdFromHalf + i * stepEachCard);
-		FVector WorldPosition;
-		FVector WorldDirection;
-		UGameplayStatics::DeprojectScreenToWorld
-		(
-			playerController,
-			ScreenPosition,
-			WorldPosition,
-			WorldDirection
-		);
-
-		if (ScreenPosition.X < HalfPoint) {
-			CardOffsetPositions.Add(FVector(-WorldPosition.X, -WorldPosition.Y, i * 0.02));
-		}
-		else {
-			CardOffsetPositions.Add(FVector(WorldPosition.X, WorldPosition.Y, i * 0.02));
-		}
-	}
-	int i = 0;
-	for (auto card : playersHand) {
-		FTransform currentPos = Cast<APlayingCard>(card)->GetActorTransform();
-		
-		currentPos.SetRela(currentPos.GetLocation() + CardOffsetPositions[i]);
-		card->SetActorTransform(currentPos);
-		i++;
-	}
 		
 	
 }

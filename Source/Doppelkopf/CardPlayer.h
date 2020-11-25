@@ -60,6 +60,7 @@ public:
 	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<uint8> CardValues;
 	FTimerHandle AllCardsSpawnedTimer;
+	void rescaleToWindowSize(FViewport* ViewPort, uint32 val);
 	void MoveOwnCards();
 	int32 PlayCard(AActor* Card);
 	bool bStartGame;
