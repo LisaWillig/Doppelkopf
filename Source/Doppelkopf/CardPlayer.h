@@ -59,6 +59,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, replicated)
 	TArray<uint8> CardValues;
+
+	TArray<FVector> OriginalCardPositions;
 	FTimerHandle AllCardsSpawnedTimer;
 	void rescaleToWindowSize(FViewport* ViewPort, uint32 val);
 	void MoveOwnCards();

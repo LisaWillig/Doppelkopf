@@ -73,6 +73,7 @@ void ACardPlayer::BeginPlay()
 
 void ACardPlayer::rescaleToWindowSize(FViewport* ViewPort, uint32 val) {
 	if (!bStartGame) { return; }
+	if (!OriginalCardPositions.IsValidIndex(0)) { return; }
 	TArray<AActor*> playersHand;
 	GetAttachedActors(playersHand, true);
 	uint8 NbCurrentCards = playersHand.Num();
@@ -115,12 +116,12 @@ void ACardPlayer::rescaleToWindowSize(FViewport* ViewPort, uint32 val) {
 		CardOffsetPositions[11 - i] = FVector(WorldPositionRight.X - (11 - i) * stepEachCard, 0, i * 0.02);
 	}
 	int i = 0;
-	for (auto card : playersHand) {
-		FVector currentPos = Cast<APlayingCard>(card)->GetActorLocation();
+	for (int j = 0; j < playersHand.Num(); j++) {
+		FVector currentPos = Cast<APlayingCard>(playersHand[j])->GetActorLocation();
 		//card->SetActorLocation(currentPos + );
 		//card->SetPivotOffset(CardOffsetPositions[i]);
 		//card->AddActorLocalOffset(CardOffsetPositions[i]);
-		card->SetActorLocation(currentPos + CardOffsetPositions[i]);
+		playersHand[j]->SetActorLocation(OriginalCardPositions[j] + CardOffsetPositions[i]);
 		i++;
 	}
 }
@@ -211,6 +212,7 @@ void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<uint8> MyHand) {
 			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
 			card->AttachToActor(this, AttachmentRules, socket);
 			PlayerCardArray.Add(card);
+			OriginalCardPositions.Add(card->GetActorLocation());
 			card->cardValue = *MyGame.CardGameValue.FindKey(MyHand[i]);
 			card->OnRep_SetCardValue();
 		}

@@ -47,5 +47,14 @@ public:
 	UFUNCTION()
 	void OnCardClicked(AActor* TouchedActor, FKey ButtonPressed);
 
+	UFUNCTION()
+	void OnCardHovered(AActor* TouchedActor);
+
+	UFUNCTION()
+	void OnCardUnHovered(AActor* TouchedActor);
+
+	float HoverScale = 1.1; 
+	float spawnZHeight;
+	bool bElevateHighlightedCards = false;
  
 };

@@ -22,6 +22,8 @@ void APlayingCard::BeginPlay()
 	Super::BeginPlay();
 
 	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);	
+	this->OnBeginCursorOver.AddDynamic(this, &APlayingCard::OnCardHovered);
+	this->OnEndCursorOver.AddDynamic(this, &APlayingCard::OnCardUnHovered);
 }
 
 void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -31,10 +33,32 @@ void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLi
 	DOREPLIFETIME(APlayingCard, cardValue);
 }
 
+void APlayingCard::OnCardHovered(AActor* TouchedActor) {
+	if (bElevateHighlightedCards) {
+		spawnZHeight = GetActorLocation().Z;
+		SetActorScale3D(FVector(GetActorScale().X * HoverScale, GetActorScale().Y * HoverScale, 1));
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, 10));
+	}
+	else {
+		SetActorScale3D(FVector(GetActorScale().X * HoverScale* 1.1, GetActorScale().Y * HoverScale * 1.1, 1));
+	}
+}
+
+void APlayingCard::OnCardUnHovered(AActor* TouchedActor){
+
+	if (bElevateHighlightedCards) {
+		SetActorScale3D(FVector(GetActorScale().X / HoverScale, GetActorScale().Y / HoverScale, 1));
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, spawnZHeight));
+	}
+	else {
+		SetActorScale3D(FVector(GetActorScale().X / (1.1*HoverScale), GetActorScale().Y/(1.1 * HoverScale), 1));
+	}
+}
 
 void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
-	//GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i"), cardValue));
+	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i"), cardValue));
 }
+
 
 void APlayingCard::OnRep_SetCardValue() {
 	SetCardFromtInt(cardValue);
