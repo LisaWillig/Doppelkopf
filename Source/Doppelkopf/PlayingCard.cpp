@@ -14,6 +14,8 @@ APlayingCard::APlayingCard()
 	bReplicates = true;
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayingCardMesh"));
 	RootComponent = CardMesh;
+
+
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +40,7 @@ void APlayingCard::OnCardHovered(AActor* TouchedActor) {
 		spawnZHeight = GetActorLocation().Z;
 		SetActorScale3D(FVector(GetActorScale().X * HoverScale, GetActorScale().Y * HoverScale, 1));
 		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, 10));
+		CardDisable(true);
 	}
 	else {
 		SetActorScale3D(FVector(GetActorScale().X * HoverScale* 1.1, GetActorScale().Y * HoverScale * 1.1, 1));
@@ -49,6 +52,7 @@ void APlayingCard::OnCardUnHovered(AActor* TouchedActor){
 	if (bElevateHighlightedCards) {
 		SetActorScale3D(FVector(GetActorScale().X / HoverScale, GetActorScale().Y / HoverScale, 1));
 		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, spawnZHeight));
+		CardDisable(false);
 	}
 	else {
 		SetActorScale3D(FVector(GetActorScale().X / (1.1*HoverScale), GetActorScale().Y/(1.1 * HoverScale), 1));

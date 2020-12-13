@@ -34,6 +34,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "PlaySettings")
 	bool bInverteHand = true;
 
+
 	//UFUNCTION(BlueprintCallable, Category = Card)
 	//void PlayCard(int32 card);
 

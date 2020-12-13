@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
 	void SwapBackFront();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Card")
+	void CardDisable(bool bdisable);
+
 	//UFUNCTION(BlueprintCallable, Category = "Card")
 	//void playThisCard();
 
@@ -30,6 +33,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UStaticMeshComponent* CardMesh; 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UStaticMeshSocket* socket;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SetCardValue)
 	uint8 cardValue;
@@ -55,6 +61,6 @@ public:
 
 	float HoverScale = 1.1; 
 	float spawnZHeight;
-	bool bElevateHighlightedCards = false;
+	bool bElevateHighlightedCards = true;
  
 };
