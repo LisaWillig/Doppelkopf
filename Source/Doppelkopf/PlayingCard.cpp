@@ -3,6 +3,7 @@
 
 #include "PlayingCard.h"
 #include "Net/UnrealNetwork.h"
+#include "CardPlayer.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine.h"
 
@@ -23,9 +24,11 @@ void APlayingCard::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);	
 	this->OnBeginCursorOver.AddDynamic(this, &APlayingCard::OnCardHovered);
 	this->OnEndCursorOver.AddDynamic(this, &APlayingCard::OnCardUnHovered);
+	
 }
 
 void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -33,41 +36,52 @@ void APlayingCard::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
 	DOREPLIFETIME(APlayingCard, cardValue);
+	DOREPLIFETIME(APlayingCard, myPlayer);
 }
 
 void APlayingCard::OnCardHovered(AActor* TouchedActor) {
 	if (bElevateHighlightedCards) {
-		spawnZHeight = GetActorLocation().Z;
-		SetActorScale3D(FVector(GetActorScale().X * HoverScale, GetActorScale().Y * HoverScale, 1));
-		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, 10));
+		if (spawnZHeight == 0) {
+			spawnZHeight = GetActorLocation().Z;
+		};
+		SetActorScale3D(FVector(GetActorScale().X * HoverScale, GetActorScale().Y * HoverScale, GetActorScale().Z));
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, 10+ spawnZHeight));
 		CardDisable(true);
 	}
 	else {
-		SetActorScale3D(FVector(GetActorScale().X * HoverScale* 1.1, GetActorScale().Y * HoverScale * 1.1, 1));
+		SetActorScale3D(FVector(GetActorScale().X * HoverScale* 1.1, GetActorScale().Y * HoverScale * 1.1, GetActorScale().Z));
 	}
 }
 
 void APlayingCard::OnCardUnHovered(AActor* TouchedActor){
 
 	if (bElevateHighlightedCards) {
-		SetActorScale3D(FVector(GetActorScale().X / HoverScale, GetActorScale().Y / HoverScale, 1));
+		SetActorScale3D(FVector(GetActorScale().X / HoverScale, GetActorScale().Y / HoverScale, GetActorScale().Z));
 		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, spawnZHeight));
 		CardDisable(false);
 	}
 	else {
-		SetActorScale3D(FVector(GetActorScale().X / (1.1*HoverScale), GetActorScale().Y/(1.1 * HoverScale), 1));
+		SetActorScale3D(FVector(GetActorScale().X / (1.1*HoverScale), GetActorScale().Y/(1.1 * HoverScale), GetActorScale().Z));
 	}
 }
 
 void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
-	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i"), cardValue));
+
+	if (myPlayer != nullptr) {
+		myPlayer->GetRemoteRole();
+		UE_LOG(LogTemp, Warning, TEXT("SocketName: %s"), *myPlayer->GetName())
+		
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Parent Actor"))
+	}
+	
 }
 
 
 void APlayingCard::OnRep_SetCardValue() {
 	SetCardFromtInt(cardValue);
 }
-
 
 // Called every frame
 void APlayingCard::Tick(float DeltaTime)

@@ -34,10 +34,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "PlaySettings")
 	bool bInverteHand = true;
 
-
-	//UFUNCTION(BlueprintCallable, Category = Card)
-	//void PlayCard(int32 card);
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

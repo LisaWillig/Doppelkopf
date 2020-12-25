@@ -45,7 +45,6 @@ void ACardPlayer::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLif
 	DOREPLIFETIME(ACardPlayer, CardValues);
 }
 
-
 void ACardPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -152,7 +151,6 @@ void ACardPlayer::Tick(float DeltaTime)
 
 void ACardPlayer::rotateOwnedCards()
 {
-	
 		TArray<AActor*> playersHand;
 		GetAttachedActors(playersHand, true);
 
@@ -160,7 +158,6 @@ void ACardPlayer::rotateOwnedCards()
 			Cast<APlayingCard>(card)->SwapBackFront();
 			Cast<APlayingCard>(card)->SetActorScale3D(FVector(2, 2, 2));
 		}
-	
 }
 
 void ACardPlayer::MoveOwnCards()
@@ -171,11 +168,9 @@ void ACardPlayer::MoveOwnCards()
 	}
 	APlayerController* playerController = Cast<APlayerController>(GetController());
 	FViewport* port = GEngine->GameViewport->Viewport;
-	rescaleToWindowSize(port, 0);
-	
-		
-	
+	rescaleToWindowSize(port, 0);	
 }
+
 
 void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<uint8> MyHand) {
 	int i = 0;
@@ -209,12 +204,13 @@ void ACardPlayer::SpawnCardHand(UWorld* const World, TArray<uint8> MyHand) {
 
 		if (PlayingCardClass != nullptr) {
 			auto card = World->SpawnActor<APlayingCard>(PlayingCardClass, pos);
-			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+			FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false }; 
 			card->AttachToActor(this, AttachmentRules, socket);
 			PlayerCardArray.Add(card);
 			OriginalCardPositions.Add(card->GetActorLocation());
 			card->cardValue = *MyGame.CardGameValue.FindKey(MyHand[i]);
 			card->OnRep_SetCardValue();
+			card->myPlayer = this;
 		}
 		i++;
 	}
@@ -227,6 +223,10 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 int32 ACardPlayer::PlayCard(AActor* Card) {
+	APlayingCard* playingCard = Cast<APlayingCard>(Card);
+	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i, player: %s"), playingCard->cardValue));
+	UE_LOG(LogTemp, Warning, TEXT("Socket Name of Played Card: %s"), *playingCard->GetAttachParentSocketName().ToString());
+	Card->Destroy(true);
 	return Cast<APlayingCard>(Card)->cardValue;
 	/*auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
 	if (gamestate != nullptr) {

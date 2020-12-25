@@ -3,6 +3,8 @@
 
 #include "DoppelkopfGameState.h"
 #include "DoppelkopfPlayerState.h"
+#include "Kismet/GameplayStatics.h"
+#include "TrickPosition.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -16,6 +18,8 @@ void ADoppelkopfGameState::BeginPlay() {
 
 	if (HasAuthority()) {
 		GameCalculation = GameLogic();
+		TrickPos = Cast<ATrickPosition>(UGameplayStatics::GetActorOfClass(GetWorld(), ATrickPosition::StaticClass()));
+		UE_LOG(LogTemp, Warning, TEXT("Trickplace: %s"), *TrickPos->GetName())
 	}
 }
 
@@ -34,11 +38,14 @@ void ADoppelkopfGameState::Tick(float DeltaTime) {
 	}
 	if (PlayerArray.Num() == 4) {
 		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->ActivatePlayerControllersTurn();
+
 	}
 }
 
 void ADoppelkopfGameState::Trick(int32 PlayedCard) {
-	GameCalculation.AddCardToTrick(PlayedCard); 	
+
+	GameCalculation.AddCardToTrick(PlayedCard); 
+	TrickPos->SpawnCardAtTrick(ActivePlayerIndex, PlayedCard);
 }
 
 void ADoppelkopfGameState::SetActivePlayer() {

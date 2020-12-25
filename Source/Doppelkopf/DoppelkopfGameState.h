@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "GameLogic.h"
+#include "TrickPosition.h"
 #include "DoppelkopfGameState.generated.h"
 
 /**
@@ -35,5 +36,7 @@ public:
 
 	GameLogic GameCalculation;
 
-	
+	/** Card Hand Mesh with attached Sockets for cards to spawn */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	ATrickPosition* TrickPos;
 };

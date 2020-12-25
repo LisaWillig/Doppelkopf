@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SetCardValue)
 	uint8 cardValue;
 
+	UPROPERTY(replicated)
+	AActor* myPlayer;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -60,7 +63,7 @@ public:
 	void OnCardUnHovered(AActor* TouchedActor);
 
 	float HoverScale = 1.1; 
-	float spawnZHeight;
+	float spawnZHeight = 0;
 	bool bElevateHighlightedCards = true;
  
 };
