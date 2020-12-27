@@ -36,4 +36,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class USceneComponent* Root;
 
+	FTimerHandle CollectTrickWaitHandle;
+	void CollectTrick();
+
+	int32 cardCount = 0;
+
 };

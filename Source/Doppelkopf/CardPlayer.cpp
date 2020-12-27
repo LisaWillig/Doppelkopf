@@ -14,6 +14,7 @@
 #include "GameLogic.h"
 #include "UnrealClient.h"
 #include "GameFramework/PlayerController.h"
+#include "DoppelkopfPlayerState.h"
 #include "DoppelkopfGameState.h"
 
 ACardPlayer::ACardPlayer()
@@ -223,10 +224,53 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 }
 
 int32 ACardPlayer::PlayCard(AActor* Card) {
+	auto test = Cast<ADoppelkopfPlayerState>(GetPlayerState());
+	if (test->myTurn == false) {
+		return -1;
+	}
+
 	APlayingCard* playingCard = Cast<APlayingCard>(Card);
 	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i, player: %s"), playingCard->cardValue));
 	UE_LOG(LogTemp, Warning, TEXT("Socket Name of Played Card: %s"), *playingCard->GetAttachParentSocketName().ToString());
+	int32 emptySocket = FCString::Atoi(*Card->GetAttachParentSocketName().ToString());
+	auto cardPositions = CardHand->GetAllSocketNames();
 	Card->Destroy(true);
+	
+	PlayerCardArray.Remove(Cast<APlayingCard>(Card));
+	for (auto card : PlayerCardArray) {
+		if (emptySocket < 7) {
+			if (FCString::Atoi(*card->GetAttachParentSocketName().ToString()) < emptySocket) {
+				FName newSocket = FName("0" + FString::FromInt(FCString::Atoi(*card->GetAttachParentSocketName().ToString()) + 1));
+				FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+				card->AttachToActor(this, AttachmentRules, newSocket);
+				auto pos = CardHand->GetSocketTransform(newSocket);
+				card->SetActorLocation(pos.GetLocation());
+				card->SetActorRotation(pos.GetRotation());
+			}
+		}
+		else {
+			int32 currentSocket = FCString::Atoi(*card->GetAttachParentSocketName().ToString());
+			if (currentSocket > emptySocket) {
+				if (currentSocket > 10) {
+					FName newSocket = FName(FString::FromInt(FCString::Atoi(*card->GetAttachParentSocketName().ToString()) - 1));
+					FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+					card->AttachToActor(this, AttachmentRules, newSocket);
+					auto pos = CardHand->GetSocketTransform(newSocket);
+					card->SetActorLocation(pos.GetLocation());
+					card->SetActorRotation(pos.GetRotation());
+				}
+				else {
+					FName newSocket = FName("0" + FString::FromInt(FCString::Atoi(*card->GetAttachParentSocketName().ToString()) - 1));
+					FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
+					card->AttachToActor(this, AttachmentRules, newSocket);
+					auto pos = CardHand->GetSocketTransform(newSocket);
+					card->SetActorLocation(pos.GetLocation());
+					card->SetActorRotation(pos.GetRotation());
+				}
+			}
+		}
+	}
+
 	return Cast<APlayingCard>(Card)->cardValue;
 	/*auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
 	if (gamestate != nullptr) {

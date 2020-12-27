@@ -22,8 +22,6 @@ ATrickPosition::ATrickPosition()
 void ATrickPosition::BeginPlay()
 {
 	Super::BeginPlay();
-
-
 	
 }
 
@@ -34,13 +32,33 @@ void ATrickPosition::Tick(float DeltaTime)
 
 }
 
+void ATrickPosition::CollectTrick() {
+	cardCount = 0;
+	UE_LOG(LogTemp, Warning, TEXT("Collect Cards"))
+	TArray<AActor*> Cards;
+	this->GetAttachedActors(Cards);
+	for (auto card : Cards) {
+		card->Destroy();
+	}
+}
+
+
 void ATrickPosition::SpawnCardAtTrick(int32 playerIndex, int32 cardValue) {
-	//auto cardPositions = TrickMesh->GetAllSocketNames();
 	auto pos = TrickMesh->GetSocketTransform(FName(FString::FromInt(playerIndex)));
+	// Scale cards up
+	FVector scale = pos.GetScale3D();
+	pos.SetScale3D(scale * 1.5);
+
 	if (PlayingCardClass != nullptr) {
 		auto card = GetWorld()->SpawnActor<APlayingCard>(PlayingCardClass, pos);
 		FAttachmentTransformRules AttachmentRules = { EAttachmentRule::KeepWorld, false };
 		card->AttachToActor(this, AttachmentRules, FName(FString::FromInt(playerIndex)));
+		card->cardValue = cardValue;
 		card->OnRep_SetCardValue();
+		cardCount++;
+	}
+	if (cardCount == 4) {
+		// collect Trick
+		GetWorldTimerManager().SetTimer(CollectTrickWaitHandle, this, &ATrickPosition::CollectTrick, 3.0f, false);
 	}
 }

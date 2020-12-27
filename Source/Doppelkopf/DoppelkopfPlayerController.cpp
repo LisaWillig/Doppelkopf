@@ -26,14 +26,14 @@ void ADoppelkopfPlayerController::Tick(float DeltaTime) {
 
 void ADoppelkopfPlayerController::SetInactive() {
 	myPlayerState->myTurn = false;
-	FInputModeUIOnly mode;
-	SetInputMode(mode);
+	//FInputModeUIOnly mode;
+	//SetInputMode(mode);
 }
 
 void ADoppelkopfPlayerController::SetActive() {
 	myPlayerState->myTurn = true;
-	FInputModeGameAndUI mode;
-	SetInputMode(mode);
+	//FInputModeGameAndUI mode;
+	//SetInputMode(mode);
 }
 
 void ADoppelkopfPlayerController::SetupInputComponent() {
@@ -69,6 +69,9 @@ void ADoppelkopfPlayerController::clickCard() {
 			bool bFound = playersHand.Contains(MouseResult.GetActor());
 			if (bFound) {
 				int32 myCard = Cast<ACardPlayer>(myPlayer)->PlayCard(MouseResult.GetActor());
+				if (myCard == -1) {
+					return;
+				}
 				Server_AddCardToTrick(myCard);
 				SetInactive();
 				Server_SetActivePlayer();
