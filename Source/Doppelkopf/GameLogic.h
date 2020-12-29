@@ -12,7 +12,7 @@ class DOPPELKOPF_API GameLogic
 public:
 	GameLogic();
 
-	void AddCardToTrick(uint8 MeshValue);
+	int8 AddCardToTrick(uint8 MeshValue);
 	~GameLogic();
 
 public:
@@ -84,9 +84,9 @@ private:
 
 	TMap<uint8, FString> Sonderpunkte; 
 
-	uint8 CalculateTrickResult(TArray<uint8> CurrentTrick);
+	int8 CalculateTrickResult(TArray<uint8> CurrentTrick);
 	void ResetTrick();
-	uint8 TrickCardCount = 0;
+	int8 TrickCardCount = -1;
 	TArray<uint8> CurrentTrick;
 	void CheckTrickSpecial(TArray<uint8> Trick);
 

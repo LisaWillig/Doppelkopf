@@ -6,6 +6,7 @@
 #include "GameLogic.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/GameMode.h"
+#include "DoppelkopfPlayerController.h"
 #include "DoppelkopfMode.generated.h"
  
 
@@ -16,6 +17,7 @@ class DOPPELKOPF_API ADoppelkopfMode : public AGameMode
 
 	virtual void PostLogin(APlayerController* NewPlayerController) override;
 	virtual void StartPlay() override;
+	virtual void StartMatch() override;
 
 public:
 
@@ -23,14 +25,15 @@ public:
 	void ShuffleCards();
 	TArray<uint8> NewDeck;
 	TArray<uint8> GiveCards();
-
+	TArray<FString> PlayerArray;
+	FString StartPlayerController; 
+	int playerIndex = 0;
 	void Tick(float DeltaTime);
-	
+	void DetermineStartPlayer();
 	//UFUNCTION()
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
 private:
-
 
 	int askedForCards = 0;
 	TArray<uint8> CardDeck = {

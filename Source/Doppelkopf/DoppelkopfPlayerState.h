@@ -16,11 +16,13 @@ class DOPPELKOPF_API ADoppelkopfPlayerState : public APlayerState
 	
 public:
 	virtual void Tick(float DeltaTime) override;
+	
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	bool myTurn = false;
 	ADoppelkopfPlayerState();
 
 	void ActivatePlayerControllersTurn();
+	void DeactivatePlayerControllersTurn();
 
 };

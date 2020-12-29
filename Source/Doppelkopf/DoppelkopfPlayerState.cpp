@@ -17,12 +17,11 @@ void ADoppelkopfPlayerState::Tick(float DeltaTime) {
 }
 
 void ADoppelkopfPlayerState::ActivatePlayerControllersTurn() {
-    if (GetPawn() != nullptr) {
-        auto test = Cast<ADoppelkopfPlayerController>(GetPawn()->GetController());
-        if (test != nullptr) {
-            test->SetActive();
-        }
-    }
+    myTurn = true;
+}
+
+void ADoppelkopfPlayerState::DeactivatePlayerControllersTurn() {
+    myTurn = false;
 }
 void ADoppelkopfPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {

@@ -170,6 +170,8 @@ void ACardPlayer::MoveOwnCards()
 	APlayerController* playerController = Cast<APlayerController>(GetController());
 	FViewport* port = GEngine->GameViewport->Viewport;
 	rescaleToWindowSize(port, 0);	
+
+
 }
 
 
@@ -225,9 +227,9 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 int32 ACardPlayer::PlayCard(AActor* Card) {
 	auto test = Cast<ADoppelkopfPlayerState>(GetPlayerState());
-	if (test->myTurn == false) {
+	/*if (test->myTurn == false) {
 		return -1;
-	}
+	}*/
 
 	APlayingCard* playingCard = Cast<APlayingCard>(Card);
 	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i, player: %s"), playingCard->cardValue));

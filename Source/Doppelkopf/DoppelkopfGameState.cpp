@@ -4,6 +4,7 @@
 #include "DoppelkopfGameState.h"
 #include "DoppelkopfPlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "DoppelkopfMode.h"
 #include "TrickPosition.h"
 #include "Net/UnrealNetwork.h"
 
@@ -15,7 +16,7 @@ ADoppelkopfGameState::ADoppelkopfGameState() {
 
 void ADoppelkopfGameState::BeginPlay() {
 	Super::BeginPlay();
-
+		
 	if (HasAuthority()) {
 		GameCalculation = GameLogic();
 		TrickPos = Cast<ATrickPosition>(UGameplayStatics::GetActorOfClass(GetWorld(), ATrickPosition::StaticClass()));
@@ -29,26 +30,47 @@ void ADoppelkopfGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty 
 	DOREPLIFETIME(ADoppelkopfGameState, ActivePlayerIndex);
 }
 
+bool ADoppelkopfGameState::HasMatchStarted() const {
+
+	return Super::HasMatchStarted();
+}
 void ADoppelkopfGameState::Tick(float DeltaTime) {
 	
     Super::Tick(DeltaTime);
 	
-	while (bPlay == false) {
-		bPlay = HasBegunPlay();
-	}
-	if (PlayerArray.Num() == 4) {
-		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->ActivatePlayerControllersTurn();
-
+	if (HasMatchStarted() == true && bStart == false && PlayerArray.Num() ==4 && HasAuthority()) {
+		StartGame();
 	}
 }
 
+void ADoppelkopfGameState::StartGame() {
+	auto test = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (test) {
+		ActivePlayerIndex = test->playerIndex;
+		SetActivePlayer();
+		bStart = true;
+	}
+}
 void ADoppelkopfGameState::Trick(int32 PlayedCard) {
 
-	GameCalculation.AddCardToTrick(PlayedCard); 
+	int8 result = GameCalculation.AddCardToTrick(PlayedCard); 
 	TrickPos->SpawnCardAtTrick(ActivePlayerIndex, PlayedCard);
+	if (result != -1) {
+		ActivePlayerIndex = (ActivePlayerIndex + result) % 4; 
+		SetActivePlayer();
+	}
 }
 
 void ADoppelkopfGameState::SetActivePlayer() {
+	for (int i = 0; i < PlayerArray.Num(); i++) {
+		if (i == ActivePlayerIndex) {
+			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->ActivatePlayerControllersTurn();
+			UE_LOG(LogTemp, Warning, TEXT("Active Player: %s"), *PlayerArray[i]->GetName() )
+		}
+		else {
+			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->DeactivatePlayerControllersTurn();
+		}
+	}    
 	ActivePlayerIndex = (ActivePlayerIndex + 1) % 4;
 }
 

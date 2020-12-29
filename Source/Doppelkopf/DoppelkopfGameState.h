@@ -25,8 +25,11 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual bool HasMatchStarted() const override;
 
+	void StartGame();
 	bool bPlay = false;
+	bool bStart = false;
 
 	UPROPERTY(replicated)
 	int32 ActivePlayerIndex = 0;
@@ -35,6 +38,7 @@ public:
 	void SetActivePlayer();
 
 	GameLogic GameCalculation;
+	FTimerHandle StartGameHandle;
 
 	/** Card Hand Mesh with attached Sockets for cards to spawn */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))

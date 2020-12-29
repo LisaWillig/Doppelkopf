@@ -24,30 +24,18 @@ void ADoppelkopfPlayerController::Tick(float DeltaTime) {
 	}
 }
 
-void ADoppelkopfPlayerController::SetInactive() {
-	myPlayerState->myTurn = false;
-	//FInputModeUIOnly mode;
-	//SetInputMode(mode);
-}
+void ADoppelkopfPlayerController::BeginPlay() {
 
-void ADoppelkopfPlayerController::SetActive() {
-	myPlayerState->myTurn = true;
-	//FInputModeGameAndUI mode;
-	//SetInputMode(mode);
+	FInputModeGameAndUI mode;
+	SetInputMode(mode);
+
+	Super::BeginPlay();
 }
 
 void ADoppelkopfPlayerController::SetupInputComponent() {
 
 	Super::SetupInputComponent();
 	InputComponent->BindAction("CardClicked", EInputEvent::IE_Released, this, &ADoppelkopfPlayerController::clickCard);
-}
-
-void ADoppelkopfPlayerController::Server_SetActivePlayer_Implementation() {
-	SetInactive();
-	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
-	if (gamestate != nullptr) {
-		gamestate->SetActivePlayer();
-	}
 }
 
 void ADoppelkopfPlayerController::Server_AddCardToTrick_Implementation(int32 card) {
@@ -59,6 +47,9 @@ void ADoppelkopfPlayerController::Server_AddCardToTrick_Implementation(int32 car
 }
 
 void ADoppelkopfPlayerController::clickCard() {
+	if (myPlayerState->myTurn == false) {
+		return;
+	}
 	APawn* myPlayer = GetPawn();
 	if (myPlayer != nullptr) {
 		TArray<AActor*> playersHand;
@@ -73,8 +64,6 @@ void ADoppelkopfPlayerController::clickCard() {
 					return;
 				}
 				Server_AddCardToTrick(myCard);
-				SetInactive();
-				Server_SetActivePlayer();
 			}
 		}
 	}

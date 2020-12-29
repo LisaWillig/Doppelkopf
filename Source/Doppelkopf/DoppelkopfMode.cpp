@@ -22,9 +22,14 @@ ADoppelkopfMode::ADoppelkopfMode() {
 void ADoppelkopfMode::StartPlay() {
 	
 	ShuffleCards();
+	
 	Super::StartPlay();
 }
 
+void ADoppelkopfMode::StartMatch() {
+	DetermineStartPlayer();
+	Super::StartMatch();
+}
 
 void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 
@@ -36,7 +41,8 @@ void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 	FInputModeGameAndUI inputMode;
 	NewPlayerController->SetInputMode(inputMode);
 	NewPlayerController->bShowMouseCursor = true;
-	
+	//auto test = Cast<ADoppelkopfPlayerState>(NewPlayerController->GetPlayerState());
+	PlayerArray.Add(NewPlayerController->GetName());
 	Super::PostLogin(NewPlayerController);
 }
 
@@ -72,6 +78,10 @@ void ADoppelkopfMode::ShuffleCards() {
 	askedForCards = 0;
 }
 
+void ADoppelkopfMode::DetermineStartPlayer() {
+	StartPlayerController = PlayerArray[playerIndex];
+	playerIndex++;
+}
 TArray<uint8> ADoppelkopfMode::GiveCards() {
 
 	TArray<uint8> hand;

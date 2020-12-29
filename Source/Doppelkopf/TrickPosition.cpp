@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "DoppelkopfGameState.h"
 #include "TrickPosition.h"
 
 // Sets default values
@@ -22,14 +23,12 @@ ATrickPosition::ATrickPosition()
 void ATrickPosition::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void ATrickPosition::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ATrickPosition::CollectTrick() {
@@ -57,8 +56,12 @@ void ATrickPosition::SpawnCardAtTrick(int32 playerIndex, int32 cardValue) {
 		card->OnRep_SetCardValue();
 		cardCount++;
 	}
+	auto gamestate = Cast<ADoppelkopfGameState>(GetWorld()->GetGameState());
+	if (gamestate != nullptr) {
+		gamestate->SetActivePlayer();
+	}
 	if (cardCount == 4) {
 		// collect Trick
-		GetWorldTimerManager().SetTimer(CollectTrickWaitHandle, this, &ATrickPosition::CollectTrick, 3.0f, false);
+		GetWorldTimerManager().SetTimer(CollectTrickWaitHandle, this, &ATrickPosition::CollectTrick, 1.0f, false);
 	}
 }

@@ -17,19 +17,13 @@ class DOPPELKOPF_API ADoppelkopfPlayerController : public APlayerController
 public:
     ADoppelkopfPlayerController();
     virtual void Tick(float DeltaTime) override;
-
-    class ADoppelkopfPlayerState* myPlayerState = nullptr;
+    virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
     void clickCard();
 
-    UFUNCTION(Server, reliable)
-	void Server_SetActivePlayer();
+    class ADoppelkopfPlayerState* myPlayerState;
 
 	UFUNCTION(Server, reliable)
 	void Server_AddCardToTrick(int32 card);
-
-    void SetInactive();
-    void SetActive();
-
        
 };
