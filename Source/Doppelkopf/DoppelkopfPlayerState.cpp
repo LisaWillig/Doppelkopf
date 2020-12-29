@@ -23,6 +23,11 @@ void ADoppelkopfPlayerState::ActivatePlayerControllersTurn() {
 void ADoppelkopfPlayerState::DeactivatePlayerControllersTurn() {
     myTurn = false;
 }
+
+void ADoppelkopfPlayerState::AddWonTrick(TArray<uint8> newTrick) {
+    myWonTricks.Append(newTrick);
+}
+
 void ADoppelkopfPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
     DOREPLIFETIME(ADoppelkopfPlayerState, myTurn);

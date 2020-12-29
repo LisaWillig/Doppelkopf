@@ -16,6 +16,9 @@ public:
 	~GameLogic();
 
 public:
+
+	TArray<uint8> LastTrick;
+
 	// Mesh Value : Game value	
 	TMap <uint8, uint8> CardGameValue = {
 
@@ -86,8 +89,9 @@ private:
 
 	int8 CalculateTrickResult(TArray<uint8> CurrentTrick);
 	void ResetTrick();
-	int8 TrickCardCount = -1;
+	int8 TrickCardCount = 0;
 	TArray<uint8> CurrentTrick;
+	
 	void CheckTrickSpecial(TArray<uint8> Trick);
 
 

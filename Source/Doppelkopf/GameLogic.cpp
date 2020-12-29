@@ -22,6 +22,7 @@ int8 GameLogic::AddCardToTrick(uint8 MeshValue) {
 	if (TrickCardCount == 4) {
 
 		int8 trickwinner = CalculateTrickResult(CurrentTrick);
+		LastTrick = CurrentTrick;
 		UE_LOG(LogTemp, Warning, TEXT("Winner of the Trick: %i"), trickwinner)
 		ResetTrick();
 		return trickwinner;

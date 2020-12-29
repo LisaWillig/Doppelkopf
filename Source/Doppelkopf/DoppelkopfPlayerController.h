@@ -23,6 +23,7 @@ public:
 
     class ADoppelkopfPlayerState* myPlayerState;
 
+    
 	UFUNCTION(Server, reliable)
 	void Server_AddCardToTrick(int32 card);
        

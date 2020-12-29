@@ -57,6 +57,7 @@ void ADoppelkopfGameState::Trick(int32 PlayedCard) {
 	TrickPos->SpawnCardAtTrick(ActivePlayerIndex, PlayedCard);
 	if (result != -1) {
 		ActivePlayerIndex = (ActivePlayerIndex + result) % 4; 
+		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->AddWonTrick(GameCalculation.LastTrick);
 		SetActivePlayer();
 	}
 }
@@ -65,7 +66,6 @@ void ADoppelkopfGameState::SetActivePlayer() {
 	for (int i = 0; i < PlayerArray.Num(); i++) {
 		if (i == ActivePlayerIndex) {
 			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->ActivatePlayerControllersTurn();
-			UE_LOG(LogTemp, Warning, TEXT("Active Player: %s"), *PlayerArray[i]->GetName() )
 		}
 		else {
 			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->DeactivatePlayerControllersTurn();
