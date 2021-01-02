@@ -18,7 +18,7 @@ public:
 public:
 
 	TArray<uint8> LastTrick;
-
+	static int32 CountResult(TArray<uint8> cardArray);
 	// Mesh Value : Game value	
 	TMap <uint8, uint8> CardGameValue = {
 
@@ -67,7 +67,7 @@ public:
 		// Spades Jack
 		TPairInitializer<const uint8&, const uint8&>(21, 43),
 		// Clubs Jack
-		TPairInitializer<const uint8&, const uint8&>(9, 43),
+		TPairInitializer<const uint8&, const uint8&>(9, 44),
 
 		// Diamond Queen
 		TPairInitializer<const uint8&, const uint8&>(4, 51),

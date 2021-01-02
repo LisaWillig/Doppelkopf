@@ -26,9 +26,6 @@ void ADoppelkopfPlayerController::Tick(float DeltaTime) {
 
 void ADoppelkopfPlayerController::BeginPlay() {
 
-	FInputModeGameAndUI mode;
-	SetInputMode(mode);
-
 	Super::BeginPlay();
 }
 
@@ -43,7 +40,6 @@ void ADoppelkopfPlayerController::Server_AddCardToTrick_Implementation(int32 car
 	if (gamestate != nullptr) {
 		gamestate->Trick(card);
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Added Card"))
 }
 
 void ADoppelkopfPlayerController::clickCard() {
@@ -64,6 +60,8 @@ void ADoppelkopfPlayerController::clickCard() {
 					return;
 				}
 				Server_AddCardToTrick(myCard);
+
+				Cast<ADoppelkopfPlayerState>(PlayerState)->myTurn = false;
 			}
 		}
 	}

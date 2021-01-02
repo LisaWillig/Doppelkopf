@@ -50,11 +50,6 @@ protected:
 
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-	void OnCardClicked(AActor* TouchedActor, FKey ButtonPressed);
 
 	UFUNCTION()
 	void OnCardHovered(AActor* TouchedActor);

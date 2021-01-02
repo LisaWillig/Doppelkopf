@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DoppelkopfMode.h"
 #include "TrickPosition.h"
+#include "GameLogic.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -20,7 +21,6 @@ void ADoppelkopfGameState::BeginPlay() {
 	if (HasAuthority()) {
 		GameCalculation = GameLogic();
 		TrickPos = Cast<ATrickPosition>(UGameplayStatics::GetActorOfClass(GetWorld(), ATrickPosition::StaticClass()));
-		UE_LOG(LogTemp, Warning, TEXT("Trickplace: %s"), *TrickPos->GetName())
 	}
 }
 
@@ -46,6 +46,7 @@ void ADoppelkopfGameState::Tick(float DeltaTime) {
 void ADoppelkopfGameState::StartGame() {
 	auto test = Cast<ADoppelkopfMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (test) {
+		cardsPlayed = 0;
 		ActivePlayerIndex = test->playerIndex;
 		SetActivePlayer();
 		bStart = true;
@@ -54,23 +55,32 @@ void ADoppelkopfGameState::StartGame() {
 void ADoppelkopfGameState::Trick(int32 PlayedCard) {
 
 	int8 result = GameCalculation.AddCardToTrick(PlayedCard); 
+	cardsPlayed++;
 	TrickPos->SpawnCardAtTrick(ActivePlayerIndex, PlayedCard);
 	if (result != -1) {
 		ActivePlayerIndex = (ActivePlayerIndex + result) % 4; 
 		Cast<ADoppelkopfPlayerState>(PlayerArray[ActivePlayerIndex])->AddWonTrick(GameCalculation.LastTrick);
-		SetActivePlayer();
+		UE_LOG(LogTemp, Warning, TEXT("Cards Played: %i"), cardsPlayed)
+		if (cardsPlayed == 48) {
+			UE_LOG(LogTemp, Warning, TEXT("Game is over"))
+				for (auto player : PlayerArray) {
+					GameLogic::CountResult(Cast<ADoppelkopfPlayerState>(player)->myWonTricks);
+				}
+		}
+		else {
+			SetActivePlayer();
+		}
 	}
 }
-
+                       
 void ADoppelkopfGameState::SetActivePlayer() {
 	for (int i = 0; i < PlayerArray.Num(); i++) {
 		if (i == ActivePlayerIndex) {
 			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->ActivatePlayerControllersTurn();
 		}
-		else {
-			Cast<ADoppelkopfPlayerState>(PlayerArray[i])->DeactivatePlayerControllersTurn();
-		}
-	}    
+	}
+	SetTurnHud();
+	
 	ActivePlayerIndex = (ActivePlayerIndex + 1) % 4;
 }
 

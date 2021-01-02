@@ -34,11 +34,16 @@ public:
 	UPROPERTY(replicated)
 	int32 ActivePlayerIndex = 0;
 
+	UPROPERTY(replicated)
+	int32 cardsPlayed = 0;
+
 	UFUNCTION()
 	void SetActivePlayer();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
+	void SetTurnHud();
+
 	GameLogic GameCalculation;
-	FTimerHandle StartGameHandle;
 
 	/** Card Hand Mesh with attached Sockets for cards to spawn */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))

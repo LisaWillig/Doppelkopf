@@ -16,7 +16,6 @@ void GameLogic::ResetTrick() {
 	CurrentTrick.Empty();
 }
 int8 GameLogic::AddCardToTrick(uint8 MeshValue) {
-	UE_LOG(LogTemp, Warning, TEXT("Card Played: %i, Nb in Trick: %i"), MeshValue, CurrentTrick.Num())
 	CurrentTrick.Add(CardGameValue[MeshValue]);
 	TrickCardCount++;
 	if (TrickCardCount == 4) {
@@ -89,4 +88,31 @@ int8 GameLogic::CalculateTrickResult(TArray<uint8> Trick) {
 
 void GameLogic::CheckTrickSpecial(TArray<uint8> Trick) {
 	// check if trick contains special points
+}
+
+int32 GameLogic::CountResult(TArray<uint8> cardArray) {
+	int32 result = 0;
+	uint8 value;
+	for (auto card : cardArray) {
+		if (card == 2 || card == 12 || card == 22 || card == 32) {
+			value = 4;
+		}
+		else if (card == 4 || card == 14 || card == 24 || card == 34) {
+			value = 11;
+		}
+		else if (card == 13 || card == 23 || card == 33 || card == 61) {
+			value = 10;
+		}
+		else if (card >= 41 && card <= 44) {
+			value = 2;
+		}
+		else if (card >= 51 && card <= 54) {
+			value = 3;
+		}
+		else { value = 0; }
+
+		result = result + value;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Result: %i"), result)
+	return result;
 }

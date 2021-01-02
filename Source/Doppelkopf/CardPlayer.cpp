@@ -227,13 +227,12 @@ void ACardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 int32 ACardPlayer::PlayCard(AActor* Card) {
 	auto test = Cast<ADoppelkopfPlayerState>(GetPlayerState());
-	/*if (test->myTurn == false) {
+	if (test->myTurn == false) {
 		return -1;
-	}*/
+	}
 
 	APlayingCard* playingCard = Cast<APlayingCard>(Card);
-	GEngine->AddOnScreenDebugMessage(-1, 200, FColor::Green, FString::Printf(TEXT("mesh %i, player: %s"), playingCard->cardValue));
-	UE_LOG(LogTemp, Warning, TEXT("Socket Name of Played Card: %s"), *playingCard->GetAttachParentSocketName().ToString());
+
 	int32 emptySocket = FCString::Atoi(*Card->GetAttachParentSocketName().ToString());
 	auto cardPositions = CardHand->GetAllSocketNames();
 	Card->Destroy(true);

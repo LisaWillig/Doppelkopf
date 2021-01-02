@@ -25,8 +25,12 @@ public:
 	void ShuffleCards();
 	TArray<uint8> NewDeck;
 	TArray<uint8> GiveCards();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FString> PlayerArray;
+
 	FString StartPlayerController; 
+	bool matchOver;
 	int playerIndex = 0;
 	void Tick(float DeltaTime);
 	void DetermineStartPlayer();

@@ -15,8 +15,6 @@ APlayingCard::APlayingCard()
 	bReplicates = true;
 	CardMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayingCardMesh"));
 	RootComponent = CardMesh;
-
-
 }
 
 // Called when the game starts or when spawned
@@ -24,8 +22,6 @@ void APlayingCard::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	this->OnClicked.AddDynamic(this, &APlayingCard::OnCardClicked);	
 	this->OnBeginCursorOver.AddDynamic(this, &APlayingCard::OnCardHovered);
 	this->OnEndCursorOver.AddDynamic(this, &APlayingCard::OnCardUnHovered);
 	
@@ -65,28 +61,6 @@ void APlayingCard::OnCardUnHovered(AActor* TouchedActor){
 	}
 }
 
-void APlayingCard::OnCardClicked(AActor* TouchedActor, FKey ButtonPressed) {
-
-	if (myPlayer != nullptr) {
-		myPlayer->GetRemoteRole();
-		UE_LOG(LogTemp, Warning, TEXT("SocketName: %s"), *myPlayer->GetName())
-		
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("No Parent Actor"))
-	}
-	
-}
-
-
 void APlayingCard::OnRep_SetCardValue() {
 	SetCardFromtInt(cardValue);
 }
-
-// Called every frame
-void APlayingCard::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

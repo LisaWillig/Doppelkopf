@@ -21,8 +21,8 @@ ADoppelkopfMode::ADoppelkopfMode() {
 
 void ADoppelkopfMode::StartPlay() {
 	
+	matchOver = false;
 	ShuffleCards();
-	
 	Super::StartPlay();
 }
 
@@ -36,12 +36,12 @@ void ADoppelkopfMode::PostLogin(APlayerController* NewPlayerController) {
 	UWorld* World = GetWorld();
 	if (World != nullptr) {
 		UWidgetLayoutLibrary::RemoveAllWidgets(World);
-	}
+	}                                                                 
 
 	FInputModeGameAndUI inputMode;
 	NewPlayerController->SetInputMode(inputMode);
 	NewPlayerController->bShowMouseCursor = true;
-	//auto test = Cast<ADoppelkopfPlayerState>(NewPlayerController->GetPlayerState());
+
 	PlayerArray.Add(NewPlayerController->GetName());
 	Super::PostLogin(NewPlayerController);
 }

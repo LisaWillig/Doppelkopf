@@ -38,7 +38,6 @@ void UDoppelkopfGameInstance::Init() {
 
 	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
 	if (Subsystem != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("Subsystem: %s"), *Subsystem->GetSubsystemName().ToString())
 			SessionInterface = Subsystem->GetSessionInterface();
 		
 		if (SessionInterface.IsValid()) {
